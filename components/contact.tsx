@@ -61,7 +61,7 @@ export default function Contact() {
           {/* Email button */}
           <div className="mt-10 pt-8 border-t border-white/10">
             <a
-              href="mailto:vivekmittal0404@gmail.com"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=vivekmittal0404@gmail.com"
               className="group inline-flex items-center rounded-full bg-white px-6 py-3 font-medium text-black transition-all duration-300 hover:-translate-y-1 hover:bg-gray-200 hover:shadow-lg hover:shadow-white/10"
             >
               Send me an email
