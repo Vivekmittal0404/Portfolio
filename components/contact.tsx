@@ -35,12 +35,16 @@ export default function Contact() {
 
             {/* LinkedIn */}
             <div>
-              <p className="text-sm text-gray-500">LinkedIn</p>
+              <p className="text-sm text-gray-500">Linkedin</p>
 
-              <span className="inline-flex items-center gap-2 text-white">
-                LinkedIn Profile
-                <span className="text-xs text-gray-500">Coming soon</span>
-              </span>
+              <a
+                href="https://www.linkedin.com/in/vivek-mittal-1413a7430"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-white transition-all duration-300 hover:translate-x-1 hover:text-blue-400"
+              >
+                Linkedin Profile
+              </a>
             </div>
 
             {/* GitHub */}

@@ -74,7 +74,14 @@ export default function Hero() {
           >
             GitHub
           </a>
-          <span className="text-gray-500 cursor-default">LinkedIn</span>
+          <a
+            href="https://www.linkedin.com/in/vivek-mittal-1413a7430/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block text-gray-500 transition-all duration-300 hover:-translate-y-1 hover:text-white"
+          >
+            Linkedin
+          </a>
           <a
             href="mailto:vivekmittal0404@gmail.com"
             className="inline-block text-gray-500 transition-all duration-300 hover:-translate-y-1 hover:text-white"

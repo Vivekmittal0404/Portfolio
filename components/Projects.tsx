@@ -5,9 +5,39 @@ const projects = [
     year: "2026",
     description:
       "A full-stack e-commerce web application designed to provide users with a smooth online shopping experience.",
-    technologies: ["React", "Node.js", "Express", "MongoDB"],
-    github: "#",
-    demo: "#",
+    technologies: [
+      "React.js",
+      "Node.js",
+      "Typescript",
+      "MongoDB",
+      " React Router",
+      "Vite",
+      "Vercel",
+    ],
+    image: "/Project-image/Electrohub.png",
+    github:
+      "https://github.com/Vivekmittal0404/Electrohub-An-Ecommerce-web-application",
+    demo: "https://electrohub-taupe.vercel.app/",
+  },
+  {
+    number: "02",
+    title: "Movie Relationship Explorer",
+    year: "2026",
+    description:
+      " a full-stack graph-powered movie exploration platform supporting movie search, detailed movie information, relationship visualization, and related-movie discovery.",
+    technologies: [
+      "React.js",
+      "Node.js",
+      "Express",
+      "CognoDB",
+      "Render",
+      "REST APIs",
+      "Cypher queries",
+    ],
+    image: "/Project-image/MovieExplorer.png",
+
+    github: "https://github.com/Vivekmittal0404/Movie-Relationship-Explorer",
+    demo: "https://movie-relationship-explorer-frontend.onrender.com/",
   },
 ];
 
@@ -32,7 +62,7 @@ export default function Projects() {
         </div>
 
         {/* Projects */}
-        <div className="mt-14">
+        <div className="mt-14 space-y-12">
           {projects.map((project) => (
             <article
               key={project.title}
@@ -40,34 +70,14 @@ export default function Projects() {
             >
               {/* Project preview */}
               <div className="relative h-64 md:h-80 overflow-hidden border-b border-white/10 bg-[#080808]">
-                {/* Browser header */}
-                <div className="absolute inset-x-0 top-0 h-10 border-b border-white/10 bg-white/[0.03] flex items-center px-4">
-                  <div className="flex gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
-                  </div>
+                <img
+                  src={project.image}
+                  alt={`${project.title} project preview`}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
 
-                  <div className="mx-auto hidden sm:block rounded-md border border-white/10 bg-black/30 px-16 py-1 text-xs text-gray-600">
-                    electrohub.app
-                  </div>
-                </div>
-
-                {/* Preview content */}
-                <div className="absolute inset-0 flex items-center justify-center pt-10">
-                  <div className="text-center transition-transform duration-500 group-hover:scale-105">
-                    <div className="text-5xl md:text-6xl font-bold tracking-tight text-white/10">
-                      ELECTROHUB
-                    </div>
-
-                    <p className="mt-3 text-sm text-gray-600">
-                      Full Stack E-Commerce Platform
-                    </p>
-                  </div>
-                </div>
-
-                {/* Subtle glow */}
-                <div className="absolute left-1/2 top-1/2 -z-0 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/10 blur-3xl" />
+                {/* Dark overlay */}
+                <div className="absolute inset-0 bg-black/20 transition-opacity duration-500 group-hover:bg-black/10" />
               </div>
 
               {/* Project information */}
@@ -104,13 +114,17 @@ export default function Projects() {
                 {/* Links */}
                 <div className="mt-8 flex flex-wrap items-center gap-4">
                   <a
+                    target="_blank"
+                    rel="noopener noreferrer"
                     href={project.demo}
-                    className="rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition-all duration-300 hover:bg-gray-200"
+                    className="rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition-all duration-300 hover:bg-gray-200 "
                   >
                     Live Demo →
                   </a>
 
                   <a
+                    target="_blank"
+                    rel="noopener noreferrer"
                     href={project.github}
                     className="rounded-full border border-white/10 px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:border-white/30 hover:bg-white/[0.05]"
                   >
