@@ -9,7 +9,7 @@ export default function About() {
           </p>
 
           <h2 className="mt-3 text-4xl md:text-5xl font-bold tracking-tight">
-            A developer who enjoys
+            A developer who enjoys{" "}
             <br className="hidden md:block" />
             building things that work.
           </h2>
