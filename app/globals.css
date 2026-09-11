@@ -56,3 +56,360 @@ body {
 .timeline-dot {
   animation: timeline-pulse 1.15s ease-in-out infinite;
 }
+
+/* =========================================================
+   RESUME DOOR TRANSITION
+   ========================================================= */
+
+.resume-door-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  perspective: 1600px;
+}
+
+/* Dark layer behind everything */
+
+.resume-page-backdrop {
+  position: absolute;
+  inset: 0;
+  background: #050505;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+
+.resume-stage-opening .resume-page-backdrop,
+.resume-stage-revealed .resume-page-backdrop,
+.resume-stage-closing .resume-page-backdrop {
+  opacity: 1;
+}
+
+/* =========================================================
+   RESUME DOCUMENT
+   ========================================================= */
+
+.resume-document {
+  z-index: 100;
+  position: absolute;
+  inset: 0;
+  background: #f7f6f2;
+  opacity: 0;
+  transform: scale(0.96);
+  transition:
+    opacity 0.7s ease,
+    transform 0.8s ease;
+}
+
+.resume-document iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+.resume-stage-revealed .resume-document {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* =========================================================
+   CLOSE BUTTON
+   ========================================================= */
+
+.resume-close {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+
+  width: 46px;
+  height: 46px;
+
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(10px);
+
+  color: white;
+  font-size: 28px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 100000;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.resume-close:hover {
+  transform: rotate(90deg) scale(1.05);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* =========================================================
+   DOORS
+   ========================================================= */
+
+.resume-door {
+  position: absolute;
+  z-index: 500;
+
+  background: linear-gradient(135deg, #0a0a0a 0%, #191919 45%, #0c0c0c 100%);
+
+  border: 1px solid rgba(210, 160, 80, 0.55);
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    inset 0 0 50px rgba(0, 0, 0, 0.8),
+    0 0 35px rgba(210, 160, 80, 0.12);
+
+  transform-style: preserve-3d;
+
+  transition:
+    left 1.05s cubic-bezier(0.77, 0, 0.18, 1),
+    right 1.05s cubic-bezier(0.77, 0, 0.18, 1),
+    top 1.05s cubic-bezier(0.77, 0, 0.18, 1),
+    width 1.05s cubic-bezier(0.77, 0, 0.18, 1),
+    height 1.05s cubic-bezier(0.77, 0, 0.18, 1),
+    transform 1.05s cubic-bezier(0.77, 0, 0.18, 1);
+}
+
+/* Initial tiny door position */
+
+.resume-door-left {
+  left: var(--origin-left);
+  top: var(--origin-top);
+
+  width: calc(var(--origin-width) / 2);
+  height: var(--origin-height);
+
+  transform-origin: left center;
+}
+
+.resume-door-right {
+  left: calc(var(--origin-left) + (var(--origin-width) / 2));
+
+  top: var(--origin-top);
+
+  width: calc(var(--origin-width) / 2);
+  height: var(--origin-height);
+
+  transform-origin: right center;
+}
+
+/* =========================================================
+   EXPAND FROM BUTTON → FULL SCREEN
+   ========================================================= */
+
+.resume-stage-opening .resume-door-left,
+.resume-stage-revealed .resume-door-left,
+.resume-stage-closing .resume-door-left {
+  left: 0;
+  top: 0;
+  width: 50vw;
+  height: 100vh;
+}
+
+.resume-stage-opening .resume-door-right,
+.resume-stage-revealed .resume-door-right,
+.resume-stage-closing .resume-door-right {
+  left: 50vw;
+  top: 0;
+  width: 50vw;
+  height: 100vh;
+}
+
+/* =========================================================
+   DOOR DESIGN
+   ========================================================= */
+
+.door-panel {
+  position: absolute;
+  inset: 5%;
+  border: 1px solid rgba(210, 160, 80, 0.45);
+
+  box-shadow:
+    inset 0 0 30px rgba(0, 0, 0, 0.6),
+    0 0 10px rgba(210, 160, 80, 0.08);
+}
+
+.door-inner-border {
+  position: absolute;
+  inset: 7%;
+  border: 1px solid rgba(210, 160, 80, 0.25);
+}
+
+.door-handle {
+  position: absolute;
+
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+
+  top: 50%;
+
+  background: radial-gradient(
+    circle at 30% 30%,
+    #fff1c7,
+    #c89b55 40%,
+    #5e421f 100%
+  );
+
+  box-shadow:
+    0 0 15px rgba(220, 170, 90, 0.45),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.resume-door-left .door-handle {
+  right: 22px;
+}
+
+.resume-door-right .door-handle {
+  left: 22px;
+}
+
+/* =========================================================
+   CENTER LIGHT
+   ========================================================= */
+
+.door-light {
+  position: absolute;
+
+  top: 0;
+  left: 50%;
+
+  width: 2px;
+  height: 100%;
+
+  background: #fff4d5;
+
+  box-shadow:
+    0 0 8px #fff4d5,
+    0 0 30px rgba(230, 180, 90, 0.8),
+    0 0 80px rgba(230, 180, 90, 0.45);
+
+  transform: translateX(-50%);
+
+  opacity: 0;
+
+  transition:
+    opacity 0.5s ease,
+    box-shadow 0.5s ease;
+}
+
+.resume-stage-opening .door-light {
+  opacity: 1;
+}
+
+.resume-stage-revealed .door-light {
+  opacity: 0;
+}
+
+/* =========================================================
+   ACTUAL DOOR OPENING
+   ========================================================= */
+
+.resume-stage-revealed .resume-door-left {
+  transform: rotateY(-105deg);
+}
+
+.resume-stage-revealed .resume-door-right {
+  transform: rotateY(105deg);
+}
+
+/* =========================================================
+   CLOSING
+   ========================================================= */
+
+.resume-stage-closing .resume-door-left {
+  transform: rotateY(0deg);
+}
+
+.resume-stage-closing .resume-door-right {
+  transform: rotateY(0deg);
+}
+
+.resume-stage-closing .resume-document {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+/* =========================================================
+   SHRINK BACK INTO BUTTON
+   ========================================================= */
+
+.resume-stage-shrinking .resume-door-left {
+  left: var(--origin-left);
+  top: var(--origin-top);
+
+  width: calc(var(--origin-width) / 2);
+  height: var(--origin-height);
+}
+
+.resume-stage-shrinking .resume-door-right {
+  left: calc(var(--origin-left) + (var(--origin-width) / 2));
+
+  top: var(--origin-top);
+
+  width: calc(var(--origin-width) / 2);
+  height: var(--origin-height);
+}
+
+.resume-stage-shrinking .door-light {
+  opacity: 0;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .resume-close {
+    top: 14px;
+    right: 14px;
+
+    width: 42px;
+    height: 42px;
+
+    font-size: 24px;
+  }
+
+  .door-panel {
+    inset: 4%;
+  }
+
+  .door-inner-border {
+    inset: 8%;
+  }
+
+  .resume-door-left .door-handle {
+    right: 12px;
+  }
+
+  .resume-door-right .door-handle {
+    left: 12px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .resume-door,
+  .resume-document,
+  .resume-page-backdrop,
+  .door-light {
+    transition-duration: 0.01ms !important;
+  }
+}

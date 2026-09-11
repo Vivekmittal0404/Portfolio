@@ -1,4 +1,10 @@
+"use client";
+
+import { useRef } from "react";
+import ResumeDoor from "@/components/ResumeDoor";
+
 export default function Hero() {
+  const resumeButtonRef = useRef(null);
   return (
     <section
       id="home"
@@ -46,14 +52,15 @@ export default function Hero() {
           >
             View My Work
           </a>
+          <ResumeDoor buttonRef={resumeButtonRef} />
 
-          <a
+          {/* <a
             href="/resume.pdf"
             target="_blank"
             className="px-7 py-3 rounded-full border border-white/20 text-white font-medium transition-all duration-300 hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/10 hover:shadow-lg hover:shadow-white/5"
           >
             View Resume
-          </a>
+          </a> */}
 
           <a
             href="#contact"
