@@ -39,6 +39,26 @@ const projects = [
     github: "https://github.com/Vivekmittal0404/Movie-Relationship-Explorer",
     demo: "https://movie-relationship-explorer-frontend.onrender.com/",
   },
+  {
+    number: "03",
+    title: "BlackCoffer Dashboard",
+    year: "2026",
+    description:
+      "A comprehensive dashboard for visualizing and analyzing data from the BlackCoffer platform.",
+    technologies: [
+      "React.js",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "Vercel",
+      "REST APIs",
+      "D3.js visualization",
+    ],
+    image: "/Project-image/BlackCofferDashboard.png",
+
+    github: "https://github.com/Vivekmittal0404/blackcoffer_dashboard",
+    demo: "https://blackcoffer-dashboard-liard.vercel.app/",
+  },
 ];
 
 export default function Projects() {
