@@ -33,7 +33,6 @@ function StarLayer({
       // Distance from center
       const radius = minRadius + Math.random() * (maxRadius - minRadius);
 
-      // Start far behind the camera
       const z = -18 + Math.random() * 18;
 
       angles[i] = angle;
@@ -75,27 +74,11 @@ function StarLayer({
 
       array[i3 + 1] = Math.sin(angles[i]) * radii[i];
 
-      /* =====================================================
-         MOVE TOWARDS CAMERA
-         ===================================================== */
-
       zPositions[i] += forwardSpeed * delta;
-
       array[i3 + 2] = zPositions[i];
-
-      /* =====================================================
-         SEAMLESS INFINITE LOOP
-         
-         IMPORTANT:
-         Camera is at Z = 5.
-
-         We wait until the star has gone
-         completely BEHIND the camera.
-         ===================================================== */
 
       if (zPositions[i] > 8) {
         zPositions[i] = -18;
-
         array[i3 + 2] = -18;
       }
     }
@@ -138,8 +121,8 @@ function Stars() {
         maxRadius={15}
         minSize={0.008}
         maxSize={0.015}
-        rotationSpeed={0.08}
-        forwardSpeed={0.8}
+        rotationSpeed={0.035}
+        forwardSpeed={0.35}
       />
 
       {/* =================================================
@@ -152,8 +135,8 @@ function Stars() {
         maxRadius={15}
         minSize={0.018}
         maxSize={0.028}
-        rotationSpeed={0.075}
-        forwardSpeed={0.8}
+        rotationSpeed={0.032}
+        forwardSpeed={0.35}
       />
 
       {/* =================================================
@@ -166,8 +149,8 @@ function Stars() {
         maxRadius={15}
         minSize={0.035}
         maxSize={0.055}
-        rotationSpeed={0.07}
-        forwardSpeed={0.8}
+        rotationSpeed={0.03}
+        forwardSpeed={0.35}
       />
     </>
   );

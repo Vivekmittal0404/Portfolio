@@ -74,8 +74,10 @@ export default function Contact() {
     max-w-7xl
     items-center
     px-6
-    py-20
+    py-8
+    sm:py-10
     lg:px-10
+    lg:py-20
   "
       >
         <div

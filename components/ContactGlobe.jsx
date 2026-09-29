@@ -57,7 +57,6 @@ function EarthModel() {
   // Planet color
   const PLANET_COLOR = "#ffffff";
 
-
   // -------------------------
   // CLOUD / RIBBON SETTINGS
   // -------------------------
@@ -92,7 +91,6 @@ function EarthModel() {
   // Cloud/ribbon color
   const CLOUD_COLOR = "#e5c7d6";
 
-
   /*
    * =========================================================
    * CLONE GLTF
@@ -115,20 +113,16 @@ function EarthModel() {
         child.position.set(
           PLANET_POSITION.x,
           PLANET_POSITION.y,
-          PLANET_POSITION.z
+          PLANET_POSITION.z,
         );
 
         child.rotation.set(
           PLANET_ROTATION.x,
           PLANET_ROTATION.y,
-          PLANET_ROTATION.z
+          PLANET_ROTATION.z,
         );
 
-        child.scale.set(
-          PLANET_SCALE.x,
-          PLANET_SCALE.y,
-          PLANET_SCALE.z
-        );
+        child.scale.set(PLANET_SCALE.x, PLANET_SCALE.y, PLANET_SCALE.z);
 
         /*
          * Clone material so changing the
@@ -142,7 +136,6 @@ function EarthModel() {
         child.material.color.set(PLANET_COLOR);
       }
 
-
       /*
        * =====================================================
        * CLOUDS / RIBBONS
@@ -153,20 +146,16 @@ function EarthModel() {
         child.position.set(
           CLOUD_POSITION.x,
           CLOUD_POSITION.y,
-          CLOUD_POSITION.z
+          CLOUD_POSITION.z,
         );
 
         child.rotation.set(
           CLOUD_ROTATION.x,
           CLOUD_ROTATION.y,
-          CLOUD_ROTATION.z
+          CLOUD_ROTATION.z,
         );
 
-        child.scale.set(
-          CLOUD_SCALE.x,
-          CLOUD_SCALE.y,
-          CLOUD_SCALE.z
-        );
+        child.scale.set(CLOUD_SCALE.x, CLOUD_SCALE.y, CLOUD_SCALE.z);
 
         /*
          * Clone material so we can safely
@@ -192,10 +181,7 @@ function EarthModel() {
 
   return (
     <group ref={modelRef}>
-      <primitive
-        object={clonedScene}
-        scale={MODEL_SCALE}
-      />
+      <primitive object={clonedScene} scale={MODEL_SCALE} />
     </group>
   );
 }
@@ -212,7 +198,7 @@ function Globe() {
 
     /* Subtle floating motion */
     globeRef.current.rotation.x =
-      Math.sin(state.clock.elapsedTime * 0.3) * 0.025;
+      Math.sin(state.clock.elapsedTime * 0.18) * 0.025;
   });
 
   return (
@@ -264,7 +250,7 @@ function Scene() {
         minDistance={5}
         maxDistance={5}
         autoRotate
-        autoRotateSpeed={1.5}
+        autoRotateSpeed={0.65}
       />
     </>
   );

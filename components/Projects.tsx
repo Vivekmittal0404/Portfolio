@@ -1,3 +1,5 @@
+import ScrollReveal from "@/components/ScrollReveal";
+
 const projects = [
   {
     number: "01",
@@ -83,76 +85,83 @@ export default function Projects() {
 
         {/* Projects */}
         <div className="mt-14 space-y-12">
-          {projects.map((project) => (
-            <article
+          {projects.map((project, index) => (
+            <ScrollReveal
               key={project.title}
-              className="group rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/5"
+              variant="card"
+              delay={index * 220}
             >
-              {/* Project preview */}
-              <div className="relative h-64 md:h-80 overflow-hidden border-b border-white/10 bg-[#080808]">
-                <img
-                  src={project.image}
-                  alt={`${project.title} project preview`}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+              <article className="group rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/5">
+                {/* Project preview */}
+                <div className="relative h-64 md:h-80 overflow-hidden border-b border-white/10 bg-[#080808]">
+                  <img
+                    src={project.image}
+                    alt={`${project.title} project preview`}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
 
-                {/* Dark overlay */}
-                <div className="absolute inset-0 bg-black/20 transition-opacity duration-500 group-hover:bg-black/10" />
-              </div>
-
-              {/* Project information */}
-              <div className="p-7 md:p-9">
-                {/* Number + year */}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-blue-400">
-                    {project.number}
-                  </span>
-
-                  <span className="text-sm text-gray-600">{project.year}</span>
+                  {/* Dark overlay */}
+                  <div className="absolute inset-0 bg-black/20 transition-opacity duration-500 group-hover:bg-black/10" />
                 </div>
 
-                {/* Title */}
-                <h3 className="mt-4 text-3xl font-semibold">{project.title}</h3>
-
-                {/* Description */}
-                <p className="mt-4 max-w-3xl text-gray-400 leading-7">
-                  {project.description}
-                </p>
-
-                {/* Technologies */}
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {project.technologies.map((technology) => (
-                    <span
-                      key={technology}
-                      className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-sm text-gray-400 transition-colors duration-300 hover:border-blue-400/30 hover:text-white"
-                    >
-                      {technology}
+                {/* Project information */}
+                <div className="p-7 md:p-9">
+                  {/* Number + year */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-blue-400">
+                      {project.number}
                     </span>
-                  ))}
-                </div>
 
-                {/* Links */}
-                <div className="mt-8 flex flex-wrap items-center gap-4">
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={project.demo}
-                    className="rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition-all duration-300 hover:bg-gray-200 "
-                  >
-                    Live Demo →
-                  </a>
+                    <span className="text-sm text-gray-600">
+                      {project.year}
+                    </span>
+                  </div>
 
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={project.github}
-                    className="rounded-full border border-white/10 px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:border-white/30 hover:bg-white/[0.05]"
-                  >
-                    GitHub →
-                  </a>
+                  {/* Title */}
+                  <h3 className="mt-4 text-3xl font-semibold">
+                    {project.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="mt-4 max-w-3xl text-gray-400 leading-7">
+                    {project.description}
+                  </p>
+
+                  {/* Technologies */}
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {project.technologies.map((technology) => (
+                      <span
+                        key={technology}
+                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-sm text-gray-400 transition-colors duration-300 hover:border-blue-400/30 hover:text-white"
+                      >
+                        {technology}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Links */}
+                  <div className="mt-8 flex flex-wrap items-center gap-4">
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={project.demo}
+                      className="rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition-all duration-300 hover:bg-gray-200 "
+                    >
+                      Live Demo →
+                    </a>
+
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={project.github}
+                      className="rounded-full border border-white/10 px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:border-white/30 hover:bg-white/[0.05]"
+                    >
+                      GitHub →
+                    </a>
+                  </div>
                 </div>
-              </div>
-            </article>
+              </article>
+            </ScrollReveal>
           ))}
         </div>
       </div>

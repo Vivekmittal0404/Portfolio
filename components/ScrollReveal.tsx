@@ -1,10 +1,22 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
-export default function ScrollReveal({ children }: { children: ReactNode }) {
+type ScrollRevealProps = {
+  children: ReactNode;
+  direction?: "left" | "right";
+  variant?: "wipe" | "card";
+  delay?: number;
+};
+
+export default function ScrollReveal({
+  children,
+  direction = "left",
+  variant = "wipe",
+  delay = 0,
+}: ScrollRevealProps) {
   const elementRef = useRef<HTMLDivElement>(null);
-  const [isRevealed, setIsRevealed] = useState(false);
+  const hasRevealedRef = useRef(false);
 
   useEffect(() => {
     const element = elementRef.current;
@@ -22,26 +34,41 @@ export default function ScrollReveal({ children }: { children: ReactNode }) {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsRevealed(true);
-          observer.disconnect();
+        if (entry.isIntersecting && !hasRevealedRef.current) {
+          hasRevealedRef.current = true;
+          observer.unobserve(element);
+          const keyframes =
+            variant === "card"
+              ? [
+                  { opacity: 0, transform: "translateY(20px) scale(0.97)" },
+                  { opacity: 1, transform: "translateY(0) scale(1)" },
+                ]
+              : direction === "left"
+                ? [
+                    { clipPath: "inset(0 100% 0 0)" },
+                    { clipPath: "inset(0 0 0 0)" },
+                  ]
+                : [
+                    { clipPath: "inset(0 0 0 100%)" },
+                    { clipPath: "inset(0 0 0 0)" },
+                  ];
+
+          element.animate(keyframes, {
+            duration: variant === "card" ? 1000 : 1400,
+            delay,
+            easing:
+              variant === "card"
+                ? "cubic-bezier(0.22, 1, 0.36, 1)"
+                : "cubic-bezier(0.65, 0, 0.35, 1)",
+          });
         }
       },
-      { threshold: 0.12 },
+      { threshold: 0, rootMargin: "0px" },
     );
 
     observer.observe(element);
     return () => observer.disconnect();
-  }, []);
+  }, [delay, direction, variant]);
 
-  return (
-    <div
-      ref={elementRef}
-      className={
-        isRevealed ? "section-reveal section-reveal-active" : "section-reveal"
-      }
-    >
-      {children}
-    </div>
-  );
+  return <div ref={elementRef}>{children}</div>;
 }
