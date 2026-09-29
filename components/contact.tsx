@@ -332,10 +332,7 @@ export default function Contact() {
         EARTH + RIBBONS
     ================================= */}
 
-          <div
-            className="pointer-events-none relative hidden w-full lg:block"
-            style={{ height: "620px" }}
-          >
+          <div className="pointer-events-none relative h-72 w-full sm:h-96 lg:h-[620px]">
             <ContactGlobe />
           </div>
         </div>

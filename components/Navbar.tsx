@@ -77,50 +77,60 @@ export default function Navbar() {
 
       {/* Mobile Navigation */}
       <div
-        className={`border-t border-white/10 bg-black/95 md:hidden ${
-          isMenuOpen ? "block" : "hidden"
+        aria-hidden={!isMenuOpen}
+        inert={!isMenuOpen}
+        className={`grid overflow-hidden border-t border-white/10 bg-black/95 transition-[grid-template-rows,opacity] duration-300 ease-out motion-reduce:transition-none md:hidden ${
+          isMenuOpen
+            ? "grid-rows-[1fr] opacity-100"
+            : "grid-rows-[0fr] opacity-0"
         }`}
       >
-        <div className="flex flex-col px-6 py-4">
-          <a
-            href="#about"
-            onClick={closeMenu}
-            className="border-b border-white/5 py-4 text-gray-300 transition-colors duration-300 hover:text-white"
-          >
-            About
-          </a>
+        <div
+          className={`min-h-0 overflow-hidden transition-transform duration-300 ease-out motion-reduce:transition-none ${
+            isMenuOpen ? "translate-y-0" : "-translate-y-2"
+          }`}
+        >
+          <div className="flex flex-col px-6 py-4">
+            <a
+              href="#about"
+              onClick={closeMenu}
+              className="border-b border-white/5 py-4 text-gray-300 transition-colors duration-300 hover:text-white"
+            >
+              About
+            </a>
 
-          <a
-            href="#skills"
-            onClick={closeMenu}
-            className="border-b border-white/5 py-4 text-gray-300 transition-colors duration-300 hover:text-white"
-          >
-            Skills
-          </a>
+            <a
+              href="#skills"
+              onClick={closeMenu}
+              className="border-b border-white/5 py-4 text-gray-300 transition-colors duration-300 hover:text-white"
+            >
+              Skills
+            </a>
 
-          <a
-            href="#projects"
-            onClick={closeMenu}
-            className="border-b border-white/5 py-4 text-gray-300 transition-colors duration-300 hover:text-white"
-          >
-            Projects
-          </a>
+            <a
+              href="#projects"
+              onClick={closeMenu}
+              className="border-b border-white/5 py-4 text-gray-300 transition-colors duration-300 hover:text-white"
+            >
+              Projects
+            </a>
 
-          <a
-            href="#journey"
-            onClick={closeMenu}
-            className="border-b border-white/5 py-4 text-gray-300 transition-colors duration-300 hover:text-white"
-          >
-            Journey
-          </a>
+            <a
+              href="#journey"
+              onClick={closeMenu}
+              className="border-b border-white/5 py-4 text-gray-300 transition-colors duration-300 hover:text-white"
+            >
+              Journey
+            </a>
 
-          <a
-            href="#contact"
-            onClick={closeMenu}
-            className="py-4 text-gray-300 transition-colors duration-300 hover:text-white"
-          >
-            Contact
-          </a>
+            <a
+              href="#contact"
+              onClick={closeMenu}
+              className="py-4 text-gray-300 transition-colors duration-300 hover:text-white"
+            >
+              Contact
+            </a>
+          </div>
         </div>
       </div>
     </nav>

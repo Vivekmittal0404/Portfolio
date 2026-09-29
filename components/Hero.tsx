@@ -10,11 +10,11 @@ export default function Hero() {
       id="home"
       className="relative flex items-start justify-center overflow-hidden px-6 pt-12 pb-0 md:min-h-screen md:items-center md:pt-0 md:pb-0"
     >
-       {/* Background gradient */}
-  <div
-    className="absolute inset-0 z-0"
-    style={{
-      background: `
+      {/* Background gradient */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          background: `
          radial-gradient(
       ellipse 75% 65% at 50% 38%,
       rgba(30, 55, 145, 0.55) 0%,
@@ -24,10 +24,10 @@ export default function Hero() {
     ),
         #000000
       `,
-    }}
-  />
+        }}
+      />
 
-      <div className="relative z-10 max-w-4xl text-center">
+      <div className="hero-entrance relative z-10 max-w-4xl text-center">
         {/* Availability badge */}
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-gray-400">
           <span className="h-2 w-2 rounded-full bg-green-400" />
