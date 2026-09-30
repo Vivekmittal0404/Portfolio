@@ -110,6 +110,60 @@ body {
   animation: timeline-pulse 2.4s ease-in-out infinite;
 }
 
+.journey-card {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.rotating-border {
+  position: relative;
+  isolation: isolate;
+}
+
+@property --rotating-border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.rotating-border::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--rotating-border-angle),
+    transparent 0deg 285deg,
+    rgba(96, 165, 250, 0.2) 310deg,
+    rgba(96, 165, 250, 0.95) 330deg,
+    transparent 350deg
+  );
+  content: "";
+  pointer-events: none;
+  animation: rotating-border-spin 4s linear infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+@keyframes rotating-border-spin {
+  to {
+    --rotating-border-angle: 360deg;
+  }
+}
+
+.journey-card-content {
+  position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotating-border::before {
+    animation: none;
+  }
+}
+
 /* =========================================================
    RESUME DOOR TRANSITION
    ========================================================= */

@@ -91,7 +91,7 @@ export default function Projects() {
               variant="card"
               delay={index * 220}
             >
-              <article className="group rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/5">
+              <article className="group rotating-border rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/5">
                 {/* Project preview */}
                 <div className="relative h-64 md:h-80 overflow-hidden border-b border-white/10 bg-[#080808]">
                   <img

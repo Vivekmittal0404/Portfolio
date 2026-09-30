@@ -164,6 +164,7 @@ export default function Contact() {
               className="
           mt-10
           w-full
+              rotating-border
           rounded-3xl
           border
           border-white/[0.10]

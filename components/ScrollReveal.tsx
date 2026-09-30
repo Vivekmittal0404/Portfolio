@@ -7,6 +7,8 @@ type ScrollRevealProps = {
   direction?: "left" | "right";
   variant?: "wipe" | "card";
   delay?: number;
+  duration?: number;
+  easing?: string;
 };
 
 export default function ScrollReveal({
@@ -14,6 +16,8 @@ export default function ScrollReveal({
   direction = "left",
   variant = "wipe",
   delay = 0,
+  duration,
+  easing,
 }: ScrollRevealProps) {
   const elementRef = useRef<HTMLDivElement>(null);
   const hasRevealedRef = useRef(false);
@@ -54,12 +58,13 @@ export default function ScrollReveal({
                   ];
 
           element.animate(keyframes, {
-            duration: variant === "card" ? 1000 : 1400,
+            duration: duration ?? (variant === "card" ? 1000 : 1400),
             delay,
             easing:
-              variant === "card"
+              easing ??
+              (variant === "card"
                 ? "cubic-bezier(0.22, 1, 0.36, 1)"
-                : "cubic-bezier(0.65, 0, 0.35, 1)",
+                : "cubic-bezier(0.65, 0, 0.35, 1)"),
           });
         }
       },
@@ -68,7 +73,7 @@ export default function ScrollReveal({
 
     observer.observe(element);
     return () => observer.disconnect();
-  }, [delay, direction, variant]);
+  }, [delay, direction, duration, easing, variant]);
 
   return <div ref={elementRef}>{children}</div>;
 }

@@ -45,45 +45,52 @@ export default function Journey() {
 
           <div className="space-y-10">
             {journey.map((item, index) => (
-              <ScrollReveal key={item.title} variant="card" delay={index * 220}>
-                <div className="relative pl-10 md:pl-12">
-                  {/* Timeline dot */}
-                  <div
-                    className={`absolute left-0 top-2 flex h-[15px] w-[15px] items-center justify-center rounded-full border border-blue-400/40 bg-black ${
-                      index === journey.length - 1 ? "timeline-dot" : ""
-                    }`}
-                  >
-                    <div className="h-1.5 w-1.5 rounded-full bg-blue-400" />
-                  </div>
-
-                  {/* Journey card */}
-                  <div className="group rounded-2xl border border-white/10 bg-white/[0.02] p-7 transition-all duration-300 hover:-translate-y-1 hover:border-blue-400/30 hover:bg-white/[0.04]">
-                    {/* Year + Type */}
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                      <span className="text-sm font-medium text-blue-400">
-                        {item.year}
-                      </span>
-
-                      <span className="text-xs uppercase tracking-widest text-gray-600">
-                        {item.type}
-                      </span>
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="mt-5 text-2xl md:text-3xl font-semibold">
-                      {item.title}
-                    </h3>
-
-                    {/* Subtitle */}
-                    <p className="mt-2 text-gray-400">{item.subtitle}</p>
-
-                    {/* Description */}
-                    <p className="mt-5 max-w-4xl text-gray-500 leading-7">
-                      {item.description}
-                    </p>
-                  </div>
+              <div key={item.title} className="relative pl-10 md:pl-12">
+                {/* Timeline dot */}
+                <div
+                  className={`absolute left-0 top-2 flex h-[15px] w-[15px] items-center justify-center rounded-full border border-blue-400/40 bg-black ${
+                    index === journey.length - 1 ? "timeline-dot" : ""
+                  }`}
+                >
+                  <div className="h-1.5 w-1.5 rounded-full bg-blue-400" />
                 </div>
-              </ScrollReveal>
+
+                <ScrollReveal
+                  variant="wipe"
+                  direction="left"
+                  delay={index * 2200}
+                  duration={1400}
+                  easing="linear"
+                >
+                  <div className="journey-card rotating-border relative overflow-hidden rounded-2xl p-px">
+                    <div className="journey-card-content rounded-[15px] border border-white/10 bg-black p-7">
+                      {/* Year + Type */}
+                      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <span className="text-sm font-medium text-blue-400">
+                          {item.year}
+                        </span>
+
+                        <span className="text-xs uppercase tracking-widest text-gray-600">
+                          {item.type}
+                        </span>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="mt-5 text-2xl md:text-3xl font-semibold">
+                        {item.title}
+                      </h3>
+
+                      {/* Subtitle */}
+                      <p className="mt-2 text-gray-400">{item.subtitle}</p>
+
+                      {/* Description */}
+                      <p className="mt-5 max-w-4xl text-gray-500 leading-7">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                </ScrollReveal>
+              </div>
             ))}
           </div>
         </div>
