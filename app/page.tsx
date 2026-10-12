@@ -13,22 +13,22 @@ export default function Home() {
     <main className="bg-black text-white">
       <Navbar />
       <Hero />
-      <ScrollReveal direction="left">
+      <ScrollReveal variant="card" duration={420}>
         <About />
       </ScrollReveal>
-      <ScrollReveal direction="right">
+      <ScrollReveal variant="card" duration={420}>
         <Skills />
       </ScrollReveal>
-      <ScrollReveal direction="left">
+      <ScrollReveal variant="card" duration={420}>
         <Projects />
       </ScrollReveal>
-      <ScrollReveal direction="right">
+      <ScrollReveal variant="card" duration={420}>
         <Journey />
       </ScrollReveal>
-      <ScrollReveal direction="left">
+      <ScrollReveal variant="card" duration={420}>
         <Contact />
       </ScrollReveal>
-      <ScrollReveal direction="right">
+      <ScrollReveal variant="card" duration={420}>
         <Footer />
       </ScrollReveal>
     </main>

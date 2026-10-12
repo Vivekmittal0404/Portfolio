@@ -9,14 +9,6 @@ html::-webkit-scrollbar {
   display: none;
 }
 
-.duration-300 {
-  transition-duration: 550ms;
-}
-
-.duration-500 {
-  transition-duration: 850ms;
-}
-
 @keyframes hero-enter {
   from {
     opacity: 0;

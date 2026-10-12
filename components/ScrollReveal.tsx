@@ -24,51 +24,41 @@ export default function ScrollReveal({
 
   useEffect(() => {
     const element = elementRef.current;
+    if (!element || hasRevealedRef.current) return;
 
-    if (
-      !element ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      return;
-    }
-
-    if (!("IntersectionObserver" in window)) {
-      return;
-    }
+    // Keep content immediately visible for users who prefer reduced motion.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!("IntersectionObserver" in window)) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasRevealedRef.current) {
-          hasRevealedRef.current = true;
-          observer.unobserve(element);
-          const keyframes =
-            variant === "card"
-              ? [
-                  { opacity: 0, transform: "translateY(20px) scale(0.97)" },
-                  { opacity: 1, transform: "translateY(0) scale(1)" },
-                ]
-              : direction === "left"
-                ? [
-                    { clipPath: "inset(0 100% 0 0)" },
-                    { clipPath: "inset(0 0 0 0)" },
-                  ]
-                : [
-                    { clipPath: "inset(0 0 0 100%)" },
-                    { clipPath: "inset(0 0 0 0)" },
-                  ];
+        if (!entry.isIntersecting || hasRevealedRef.current) return;
 
-          element.animate(keyframes, {
-            duration: duration ?? (variant === "card" ? 1000 : 1400),
-            delay,
-            easing:
-              easing ??
-              (variant === "card"
-                ? "cubic-bezier(0.22, 1, 0.36, 1)"
-                : "cubic-bezier(0.65, 0, 0.35, 1)"),
-          });
-        }
+        hasRevealedRef.current = true;
+        observer.unobserve(element);
+
+        // A subtle fade/slide avoids expensive clip-path wipes and feels responsive.
+        const xOffset =
+          variant === "card" ? 0 : direction === "left" ? -10 : 10;
+        const yOffset = variant === "card" ? 14 : 8;
+
+        element.animate(
+          [
+            {
+              opacity: 0,
+              transform: `translate3d(${xOffset}px, ${yOffset}px, 0)`,
+            },
+            { opacity: 1, transform: "translate3d(0, 0, 0)" },
+          ],
+          {
+            duration: duration ?? (variant === "card" ? 420 : 460),
+            delay: Math.max(0, delay),
+            easing: easing ?? "cubic-bezier(0.22, 1, 0.36, 1)",
+            fill: "both",
+          },
+        );
       },
-      { threshold: 0, rootMargin: "0px" },
+      { threshold: 0, rootMargin: "0px 0px -2% 0px" },
     );
 
     observer.observe(element);

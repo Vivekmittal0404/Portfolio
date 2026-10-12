@@ -19,19 +19,16 @@ export default function Contact() {
     const form = event.currentTarget;
     const formData = new FormData(form);
 
-    formData.append("access_key", "fb9b7dc0-06b8-433a-b07e-65bc319dec31");
-
-    formData.append("subject", "New Portfolio Contact Message");
-
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch("/api/contact", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(formData)),
       });
 
       const data = await response.json();
 
-      if (data.success) {
+      if (response.ok && data.ok) {
         setFormMessage("Message sent successfully! I'll get back to you soon.");
 
         form.reset();
@@ -208,6 +205,7 @@ export default function Contact() {
                     type="text"
                     name="name"
                     placeholder="Your name"
+                    required
                     className="
                 h-11
                 w-full
@@ -242,8 +240,9 @@ export default function Contact() {
 
                   <input
                     type="email"
-                    name="name"
+                    name="email"
                     placeholder="you@example.com"
+                    required
                     className="
                 h-11
                 w-full
@@ -263,6 +262,19 @@ export default function Contact() {
                 </label>
               </div>
 
+              <label className="mt-5 block">
+                <span className="mb-2 block text-xs text-white/60">
+                  Subject
+                </span>
+                <input
+                  type="text"
+                  name="subject"
+                  placeholder="What is this about?"
+                  className="h-11 w-full rounded-xl border border-white/10 bg-white/[0.035] px-4 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-cyan-300/50"
+                  maxLength={120}
+                />
+              </label>
+
               {/* Message */}
 
               <label className="mt-5 block">
@@ -278,9 +290,10 @@ export default function Contact() {
                 </span>
 
                 <textarea
-                  name="name"
+                  name="message"
                   rows={5}
                   placeholder="Tell me about your project..."
+                  required
                   className="
               w-full
               resize-none

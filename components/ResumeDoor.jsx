@@ -6,9 +6,17 @@ import { useEffect, useState } from "react";
 export default function ResumeDoor({ buttonRef }) {
   const [stage, setStage] = useState("closed");
   const [origin, setOrigin] = useState(null);
+  const [resumeUrl, setResumeUrl] = useState("/api/resume/download");
 
   function openResume() {
     if (!buttonRef?.current) return;
+
+    const anonymousId = sessionStorage.getItem("portfolio_anonymous_visitor");
+    setResumeUrl(
+      anonymousId
+        ? `/api/resume/download?visitor=${encodeURIComponent(anonymousId)}`
+        : "/api/resume/download",
+    );
 
     const rect = buttonRef.current.getBoundingClientRect();
 
@@ -79,7 +87,7 @@ export default function ResumeDoor({ buttonRef }) {
 
             {/* Resume PDF */}
             <div className="resume-document">
-              <iframe src="/resume.pdf" title="Vivek Mittal Resume" />
+              <iframe src={resumeUrl} title="Vivek Mittal Resume" />
             </div>
 
             {/* Close button */}

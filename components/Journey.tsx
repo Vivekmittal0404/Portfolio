@@ -1,5 +1,3 @@
-import ScrollReveal from "@/components/ScrollReveal";
-
 const journey = [
   {
     year: "2022 — 2026",
@@ -55,41 +53,33 @@ export default function Journey() {
                   <div className="h-1.5 w-1.5 rounded-full bg-blue-400" />
                 </div>
 
-                <ScrollReveal
-                  variant="wipe"
-                  direction="left"
-                  delay={index * 2200}
-                  duration={1400}
-                  easing="linear"
-                >
-                  <div className="journey-card rotating-border relative overflow-hidden rounded-2xl p-px">
-                    <div className="journey-card-content rounded-[15px] border border-white/10 bg-black p-7">
-                      {/* Year + Type */}
-                      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                        <span className="text-sm font-medium text-blue-400">
-                          {item.year}
-                        </span>
+                <div className="journey-card rotating-border relative overflow-hidden rounded-2xl p-px">
+                  <div className="journey-card-content rounded-[15px] border border-white/10 bg-black p-7">
+                    {/* Year + Type */}
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <span className="text-sm font-medium text-blue-400">
+                        {item.year}
+                      </span>
 
-                        <span className="text-xs uppercase tracking-widest text-gray-600">
-                          {item.type}
-                        </span>
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="mt-5 text-2xl md:text-3xl font-semibold">
-                        {item.title}
-                      </h3>
-
-                      {/* Subtitle */}
-                      <p className="mt-2 text-gray-400">{item.subtitle}</p>
-
-                      {/* Description */}
-                      <p className="mt-5 max-w-4xl text-gray-500 leading-7">
-                        {item.description}
-                      </p>
+                      <span className="text-xs uppercase tracking-widest text-gray-600">
+                        {item.type}
+                      </span>
                     </div>
+
+                    {/* Title */}
+                    <h3 className="mt-5 text-2xl md:text-3xl font-semibold">
+                      {item.title}
+                    </h3>
+
+                    {/* Subtitle */}
+                    <p className="mt-2 text-gray-400">{item.subtitle}</p>
+
+                    {/* Description */}
+                    <p className="mt-5 max-w-4xl text-gray-500 leading-7">
+                      {item.description}
+                    </p>
                   </div>
-                </ScrollReveal>
+                </div>
               </div>
             ))}
           </div>
