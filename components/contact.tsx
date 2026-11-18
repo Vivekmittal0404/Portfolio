@@ -1,7 +1,10 @@
 "use client";
-import ContactGlobe from "./ContactGlobe";
-import ContactStars from "./ContactStars";
-import { useState } from "react";
+import dynamic from "next/dynamic";
+import { useState, useEffect, useRef } from "react";
+
+// Lazy-load heavy 3D WebGL canvases only when user reaches Contact section
+const ContactGlobe = dynamic(() => import("./ContactGlobe"), { ssr: false });
+const ContactStars = dynamic(() => import("./ContactStars"), { ssr: false });
 
 /* =========================================================
    CONTACT
@@ -10,6 +13,22 @@ import { useState } from "react";
 export default function Contact() {
   const [isSending, setIsSending] = useState(false);
   const [formMessage, setFormMessage] = useState("");
+  const [isInView, setIsInView] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { rootMargin: "300px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -45,6 +64,7 @@ export default function Contact() {
   };
   return (
     <section
+      ref={sectionRef}
       id="contact"
       className="
         relative
@@ -54,7 +74,7 @@ export default function Contact() {
         text-white
       "
     >
-      <ContactStars />
+      {isInView && <ContactStars />}
 
       {/* =====================================
     CONTENT
@@ -349,7 +369,7 @@ export default function Contact() {
     ================================= */}
 
           <div className="pointer-events-none relative h-72 w-full sm:h-96 lg:h-[620px]">
-            <ContactGlobe />
+            {isInView && <ContactGlobe />}
           </div>
         </div>
       </div>

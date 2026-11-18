@@ -6,7 +6,7 @@ import { ResumeDownload, VisitorSession } from "@/lib/models";
 import { allowRateLimit } from "@/lib/security";
 
 export async function GET(request: Request) {
-  const destination = new URL("/resume.pdf", request.url);
+  const destination = new URL("/resume.pdf?v=20261118", request.url);
   const cookieStore = await cookies();
   const uuidPattern =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -56,6 +56,12 @@ export async function GET(request: Request) {
   }
 
   const response = NextResponse.redirect(destination, 302);
+  response.headers.set(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+  );
+  response.headers.set("Pragma", "no-cache");
+  response.headers.set("Expires", "0");
   if (cookieStore.get("portfolio_visitor")?.value !== anonymousId) {
     response.cookies.set("portfolio_visitor", anonymousId, {
       httpOnly: true,

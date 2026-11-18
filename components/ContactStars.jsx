@@ -56,34 +56,9 @@ function StarLayer({
 
   useFrame((_, delta) => {
     if (!pointsRef.current) return;
-
-    const positionAttribute = pointsRef.current.geometry.attributes.position;
-
-    const array = positionAttribute.array;
-
-    for (let i = 0; i < count; i++) {
-      const i3 = i * 3;
-
-      /* =====================================================
-         CIRCULAR ROTATION
-         ===================================================== */
-
-      angles[i] += rotationSpeed * delta;
-
-      array[i3] = Math.cos(angles[i]) * radii[i];
-
-      array[i3 + 1] = Math.sin(angles[i]) * radii[i];
-
-      zPositions[i] += forwardSpeed * delta;
-      array[i3 + 2] = zPositions[i];
-
-      if (zPositions[i] > 8) {
-        zPositions[i] = -18;
-        array[i3 + 2] = -18;
-      }
-    }
-
-    positionAttribute.needsUpdate = true;
+    // GPU-accelerated rotation without expensive CPU array buffer thrashing
+    pointsRef.current.rotation.z += rotationSpeed * delta;
+    pointsRef.current.rotation.y += rotationSpeed * 0.4 * delta;
   });
 
   return (
@@ -116,7 +91,7 @@ function Stars() {
           ================================================= */}
 
       <StarLayer
-        count={1500}
+        count={700}
         minRadius={0.5}
         maxRadius={15}
         minSize={0.008}
@@ -130,7 +105,7 @@ function Stars() {
           ================================================= */}
 
       <StarLayer
-        count={250}
+        count={120}
         minRadius={0.5}
         maxRadius={15}
         minSize={0.018}
@@ -144,7 +119,7 @@ function Stars() {
           ================================================= */}
 
       <StarLayer
-        count={50}
+        count={30}
         minRadius={0.5}
         maxRadius={15}
         minSize={0.035}
@@ -164,7 +139,7 @@ export default function ContactStars() {
   return (
     <div className="pointer-events-none absolute inset-0 z-0">
       <Canvas
-        dpr={[1, 1.5]}
+        dpr={[1, 1.25]}
         camera={{
           position: [0, 0, 5],
           fov: 45,
@@ -172,6 +147,7 @@ export default function ContactStars() {
         gl={{
           antialias: true,
           alpha: true,
+          powerPreference: "high-performance",
         }}
       >
         <Stars />

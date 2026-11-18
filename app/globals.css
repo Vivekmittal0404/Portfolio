@@ -9,48 +9,187 @@ html::-webkit-scrollbar {
   display: none;
 }
 
-@keyframes hero-enter {
-  from {
+/* =========================================================
+   STYLISH MODERN HERO ENTRANCE & AURORA ANIMATIONS
+   ========================================================= */
+
+@keyframes hero-fade-scale {
+  0% {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(28px) scale(0.96);
+    filter: blur(8px);
   }
 
-  to {
+  100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
   }
 }
 
 .hero-entrance > * {
-  animation: hero-enter 1200ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
+  animation: hero-fade-scale 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero-entrance > :nth-child(1) {
+  animation-delay: 80ms;
 }
 
 .hero-entrance > :nth-child(2) {
-  animation-delay: 120ms;
+  animation-delay: 180ms;
 }
 
 .hero-entrance > :nth-child(3) {
-  animation-delay: 240ms;
+  animation-delay: 300ms;
 }
 
 .hero-entrance > :nth-child(4) {
-  animation-delay: 360ms;
+  animation-delay: 420ms;
 }
 
 .hero-entrance > :nth-child(5) {
-  animation-delay: 480ms;
+  animation-delay: 540ms;
 }
 
 .hero-entrance > :nth-child(6) {
-  animation-delay: 600ms;
+  animation-delay: 660ms;
 }
 
 .hero-entrance > :nth-child(7) {
-  animation-delay: 720ms;
+  animation-delay: 780ms;
+}
+
+@keyframes text-shimmer-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.hero-text-shimmer {
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #e0e7ff 20%,
+    #93c5fd 40%,
+    #c084fc 60%,
+    #67e8f9 80%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: text-shimmer-sweep 8s linear infinite;
+}
+
+/* =========================================================
+   NAVBAR LOGO REFLECTING & MIRROR ANIMATION
+   ========================================================= */
+
+@keyframes logo-reflect-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+  35%, 100% {
+    background-position: 200% 0;
+  }
+}
+
+.navbar-logo-reflect {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(
+    115deg,
+    #ffffff 0%,
+    #cbd5e1 32%,
+    #ffffff 44%,
+    #60a5fa 50%,
+    #ffffff 56%,
+    #cbd5e1 68%,
+    #ffffff 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: logo-reflect-sweep 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  filter: drop-shadow(0 0 12px rgba(96, 165, 250, 0.25));
+  /* High-end inverted glass mirror reflection underneath */
+  -webkit-box-reflect: below -7px linear-gradient(
+    transparent 50%,
+    rgba(255, 255, 255, 0.22) 100%
+  );
+  transition: filter 0.3s ease;
+}
+
+.group:hover .navbar-logo-reflect {
+  animation: logo-reflect-sweep 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  filter: drop-shadow(0 0 18px rgba(96, 165, 250, 0.6));
+}
+
+@keyframes hero-aurora-drift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.45;
+  }
+  33% {
+    transform: translate(35px, -25px) scale(1.1);
+    opacity: 0.65;
+  }
+  66% {
+    transform: translate(-30px, 20px) scale(0.92);
+    opacity: 0.5;
+  }
+}
+
+.animate-aurora-1 {
+  animation: hero-aurora-drift 14s ease-in-out infinite alternate;
+}
+
+.animate-aurora-2 {
+  animation: hero-aurora-drift 18s ease-in-out infinite alternate-reverse;
+}
+
+/* Button light sweep reflection */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -70%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 80%
+  );
+  transform: rotate(25deg);
+  transition: all 0.6s ease;
+  pointer-events: none;
+}
+
+.btn-shine:hover::after {
+  left: 130%;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero-entrance > * {
+    animation: none;
+  }
+  .hero-text-shimmer {
+    animation: none;
+  }
+  .animate-aurora-1,
+  .animate-aurora-2 {
     animation: none;
   }
 }
@@ -125,14 +264,16 @@ body {
   border-radius: inherit;
   background: conic-gradient(
     from var(--rotating-border-angle),
-    transparent 0deg 285deg,
-    rgba(96, 165, 250, 0.2) 310deg,
-    rgba(96, 165, 250, 0.95) 330deg,
-    transparent 350deg
+    transparent 0deg 260deg,
+    rgba(56, 189, 248, 0.25) 280deg,
+    rgba(96, 165, 250, 0.95) 320deg,
+    rgba(168, 85, 247, 0.8) 345deg,
+    transparent 360deg
   );
   content: "";
   pointer-events: none;
-  animation: rotating-border-spin 4s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -140,10 +281,68 @@ body {
   mask-composite: exclude;
 }
 
+/* Only run the spin animation and show border on hover, or for hero badge */
+.rotating-border:hover::before,
+.hero-entrance .rotating-border::before {
+  opacity: 1;
+  animation: rotating-border-spin 3.5s linear infinite;
+}
+
 @keyframes rotating-border-spin {
   to {
     --rotating-border-angle: 360deg;
   }
+}
+
+/* Spotlight dynamic cursor illumination */
+.spotlight-card {
+  position: relative;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+.spotlight-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, -1000px) var(--mouse-y, -1000px),
+    rgba(96, 165, 250, 0.12),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.spotlight-card:hover::after {
+  opacity: 1;
+}
+
+.card-tilt-container {
+  perspective: 1000px;
+}
+
+.card-tilt-target {
+  transform-style: preserve-3d;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+@keyframes ambient-glow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.08) translateY(-6px);
+  }
+}
+
+.animate-ambient {
+  animation: ambient-glow 6s ease-in-out infinite;
 }
 
 .journey-card-content {
@@ -154,10 +353,29 @@ body {
   .rotating-border::before {
     animation: none;
   }
+  .spotlight-card::after {
+    display: none;
+  }
+  .animate-ambient {
+    animation: none;
+  }
 }
 
 /* =========================================================
-   RESUME DOOR TRANSITION
+   SCROLL PERFORMANCE & CONTENT VISIBILITY OPTIMIZATIONS
+   ========================================================= */
+
+#about,
+#skills,
+#projects,
+#journey,
+#testimonials {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 700px;
+}
+
+/* =========================================================
+   RESUME CYBER VAULT DOOR TRANSITION (GPU ACCELERATED & SMOOTH)
    ========================================================= */
 
 .resume-door-overlay {
@@ -165,39 +383,119 @@ body {
   inset: 0;
   z-index: 9999;
   overflow: hidden;
-  perspective: 1600px;
+  perspective: 1800px;
+  perspective-origin: 50% 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
 }
 
-/* Dark layer behind everything */
-
+/* Dark glass backdrop behind everything */
 .resume-page-backdrop {
   position: absolute;
   inset: 0;
-  background: #050505;
+  background: rgba(3, 7, 18, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   opacity: 0;
-  transition: opacity 0.7s ease;
+  transition: opacity 0.6s ease;
+  z-index: 10;
 }
 
-.resume-stage-opening .resume-page-backdrop,
-.resume-stage-revealed .resume-page-backdrop,
-.resume-stage-closing .resume-page-backdrop {
+.resume-stage-expanding .resume-page-backdrop {
+  opacity: 0.3;
+}
+
+.resume-stage-expanded .resume-page-backdrop,
+.resume-stage-opened .resume-page-backdrop {
   opacity: 1;
 }
 
+.resume-stage-closing .resume-page-backdrop {
+  opacity: 0.85;
+}
+
+.resume-stage-shrinking .resume-page-backdrop {
+  opacity: 0;
+  transition: opacity 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 /* =========================================================
-   RESUME DOCUMENT
+   RESUME DOCUMENT WRAPPER & TOOLBAR
    ========================================================= */
 
-.resume-document {
-  z-index: 100;
-  position: absolute;
-  inset: 0;
-  background: #f7f6f2;
+.resume-document-wrapper {
+  position: relative;
+  z-index: 70;
+  width: 92vw;
+  max-width: 920px;
+  height: 88vh;
+  max-height: 1050px;
+  display: flex;
+  flex-direction: column;
   opacity: 0;
-  transform: scale(0.96);
+  transform: scale(0.96) translateY(12px);
+  pointer-events: none;
   transition:
-    opacity 0.7s ease,
-    transform 0.8s ease;
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.25s,
+    transform 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
+  box-shadow:
+    0 25px 70px -15px rgba(0, 0, 0, 0.85),
+    0 0 50px rgba(56, 189, 248, 0.15);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #0d1117;
+}
+
+.resume-stage-opened .resume-document-wrapper {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+  z-index: 100;
+}
+
+.resume-stage-closing .resume-document-wrapper,
+.resume-stage-shrinking .resume-document-wrapper {
+  opacity: 0;
+  transform: scale(0.97) translateY(8px);
+  pointer-events: none;
+  transition:
+    opacity 0.4s ease,
+    transform 0.45s ease;
+}
+
+.resume-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: rgba(13, 17, 23, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 120;
+  pointer-events: auto;
+}
+
+.resume-toolbar a,
+.resume-toolbar button {
+  position: relative;
+  z-index: 130;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.resume-document {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  background: #11141d;
+  position: relative;
+  z-index: 110;
+  pointer-events: auto;
+  overflow: hidden;
 }
 
 .resume-document iframe {
@@ -205,308 +503,253 @@ body {
   height: 100%;
   border: none;
   display: block;
-}
-
-.resume-stage-revealed .resume-document {
-  opacity: 1;
-  transform: scale(1);
+  background: #f8fafc;
+  pointer-events: auto;
 }
 
 /* =========================================================
-   CLOSE BUTTON
+   DOORS ASSEMBLY & BUTTON EMERGENCE / SHRINKING
    ========================================================= */
 
-.resume-close {
+.resume-doors-assembly {
   position: absolute;
-  top: 22px;
-  right: 22px;
-
-  width: 46px;
-  height: 46px;
-
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-
-  background: rgba(10, 10, 10, 0.8);
-  backdrop-filter: blur(10px);
-
-  color: white;
-  font-size: 28px;
-  line-height: 1;
-
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  z-index: 100000;
-
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 50;
+  perspective: 1800px;
+  perspective-origin: 50% 50%;
+  transform-origin: center center;
+  overflow: hidden;
+  pointer-events: none !important;
+  will-change: transform, border-radius, opacity;
   transition:
-    transform 0.25s ease,
-    background 0.25s ease,
-    border-color 0.25s ease;
+    transform 0.52s cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 0.52s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.45s ease;
 }
 
-.resume-close:hover {
-  transform: rotate(90deg) scale(1.05);
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.5);
+.resume-doors-assembly * {
+  pointer-events: none !important;
+}
+
+/* Stage 1: Collapsed directly at the "View Resume" button coordinates */
+.resume-stage-expanding .resume-doors-assembly {
+  transform: translate3d(var(--origin-x, 0px), var(--origin-y, 0px), 0)
+    scale(var(--scale-x, 0.15), var(--scale-y, 0.05));
+  border-radius: 9999px;
+  opacity: 0.95;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
+  pointer-events: none;
+}
+
+/* Stage 2 & 3: Expanded to full viewport */
+.resume-stage-expanded .resume-doors-assembly,
+.resume-stage-opened .resume-doors-assembly,
+.resume-stage-closing .resume-doors-assembly {
+  transform: translate3d(0, 0, 0) scale(1, 1);
+  border-radius: 0px;
+  opacity: 1;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+/* Stage 4: Shrink cleanly back down into the "View Resume" button */
+.resume-stage-shrinking .resume-doors-assembly {
+  transform: translate3d(var(--origin-x, 0px), var(--origin-y, 0px), 0)
+    scale(var(--scale-x, 0.15), var(--scale-y, 0.05));
+  border-radius: 9999px;
+  opacity: 0;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+  pointer-events: none;
+  transition:
+    transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s ease 0.08s;
 }
 
 /* =========================================================
-   DOORS
+   MODERN OBSIDIAN & NEON TITANIUM VAULT DOORS
    ========================================================= */
 
 .resume-door {
   position: absolute;
-  z-index: 500;
-
-  background: linear-gradient(135deg, #0a0a0a 0%, #191919 45%, #0c0c0c 100%);
-
-  border: 1px solid rgba(210, 160, 80, 0.55);
-
+  top: 0;
+  bottom: 0;
+  width: 50vw;
+  height: 100vh;
+  z-index: 50;
+  background: linear-gradient(
+    135deg,
+    #050811 0%,
+    #0b101d 30%,
+    #070b14 70%,
+    #020409 100%
+  );
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
-    inset 0 0 50px rgba(0, 0, 0, 0.8),
-    0 0 35px rgba(210, 160, 80, 0.12);
-
+    inset 0 0 100px rgba(0, 0, 0, 0.95),
+    inset 0 0 1px 1px rgba(255, 255, 255, 0.08);
   transform-style: preserve-3d;
-
-  transition:
-    left 1.05s cubic-bezier(0.77, 0, 0.18, 1),
-    right 1.05s cubic-bezier(0.77, 0, 0.18, 1),
-    top 1.05s cubic-bezier(0.77, 0, 0.18, 1),
-    width 1.05s cubic-bezier(0.77, 0, 0.18, 1),
-    height 1.05s cubic-bezier(0.77, 0, 0.18, 1),
-    transform 1.05s cubic-bezier(0.77, 0, 0.18, 1);
+  will-change: transform;
+  pointer-events: none !important;
+  transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Initial tiny door position */
+/* Inner 3D lighting shadow that deepens as the door swings open */
+.resume-door::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.75),
+    rgba(0, 0, 0, 0.1)
+  );
+  opacity: 0;
+  transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
 
 .resume-door-left {
-  left: var(--origin-left);
-  top: var(--origin-top);
-
-  width: calc(var(--origin-width) / 2);
-  height: var(--origin-height);
-
-  transform-origin: left center;
+  left: 0;
+  transform-origin: 0% 50%;
+  border-right: 1px solid rgba(56, 189, 248, 0.6);
+  transform: rotateY(0deg);
 }
 
 .resume-door-right {
-  left: calc(var(--origin-left) + (var(--origin-width) / 2));
-
-  top: var(--origin-top);
-
-  width: calc(var(--origin-width) / 2);
-  height: var(--origin-height);
-
-  transform-origin: right center;
+  right: 0;
+  transform-origin: 100% 50%;
+  border-left: 1px solid rgba(56, 189, 248, 0.6);
+  transform: rotateY(0deg);
 }
 
-/* =========================================================
-   EXPAND FROM BUTTON → FULL SCREEN
-   ========================================================= */
-
-.resume-stage-opening .resume-door-left,
-.resume-stage-revealed .resume-door-left,
-.resume-stage-closing .resume-door-left {
-  left: 0;
-  top: 0;
-  width: 50vw;
-  height: 100vh;
+/* When opened: slow majestic 3D parting */
+.resume-stage-opened .resume-door-left {
+  transform: rotateY(-112deg);
 }
 
-.resume-stage-opening .resume-door-right,
-.resume-stage-revealed .resume-door-right,
-.resume-stage-closing .resume-door-right {
-  left: 50vw;
-  top: 0;
-  width: 50vw;
-  height: 100vh;
+.resume-stage-opened .resume-door-right {
+  transform: rotateY(112deg);
 }
 
-/* =========================================================
-   DOOR DESIGN
-   ========================================================= */
+.resume-stage-opened .resume-door::after {
+  opacity: 0.65;
+}
 
+/* When closing or shrinking: smooth return to 0deg */
+.resume-stage-closing .resume-door-left,
+.resume-stage-shrinking .resume-door-left {
+  transform: rotateY(0deg);
+  transition: transform 0.68s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.resume-stage-closing .resume-door-right,
+.resume-stage-shrinking .resume-door-right {
+  transform: rotateY(0deg);
+  transition: transform 0.68s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.resume-stage-closing .resume-door::after,
+.resume-stage-shrinking .resume-door::after {
+  opacity: 0;
+  transition: opacity 0.68s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Door Panels & Futuristic Neon Insets */
 .door-panel {
   position: absolute;
-  inset: 5%;
-  border: 1px solid rgba(210, 160, 80, 0.45);
-
-  box-shadow:
-    inset 0 0 30px rgba(0, 0, 0, 0.6),
-    0 0 10px rgba(210, 160, 80, 0.08);
+  inset: 4%;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(56, 189, 248, 0.03) 0%,
+    transparent 70%
+  );
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
 }
 
 .door-inner-border {
   position: absolute;
-  inset: 7%;
-  border: 1px solid rgba(210, 160, 80, 0.25);
+  inset: 8%;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.door-seam-glow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.6) 20%,
+    rgba(168, 85, 247, 0.8) 50%,
+    rgba(56, 189, 248, 0.6) 80%,
+    transparent 100%
+  );
+}
+
+.resume-door-left .door-seam-glow {
+  right: 0;
+}
+
+.resume-door-right .door-seam-glow {
+  left: 0;
 }
 
 .door-handle {
   position: absolute;
-
-  width: 18px;
-  height: 18px;
-
-  border-radius: 50%;
-
   top: 50%;
-
-  background: radial-gradient(
-    circle at 30% 30%,
-    #fff1c7,
-    #c89b55 40%,
-    #5e421f 100%
-  );
-
-  box-shadow:
-    0 0 15px rgba(220, 170, 90, 0.45),
-    inset 1px 1px 2px rgba(255, 255, 255, 0.5);
+  width: 8px;
+  height: 56px;
+  transform: translateY(-50%);
+  border-radius: 4px;
+  background: linear-gradient(180deg, #38bdf8, #818cf8);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.8);
 }
 
 .resume-door-left .door-handle {
-  right: 22px;
+  right: 12px;
 }
 
 .resume-door-right .door-handle {
-  left: 22px;
+  left: 12px;
 }
 
-/* =========================================================
-   CENTER LIGHT
-   ========================================================= */
-
+/* Center Laser Beam on opening */
 .door-light {
   position: absolute;
-
   top: 0;
+  bottom: 0;
   left: 50%;
-
-  width: 2px;
-  height: 100%;
-
-  background: #fff4d5;
-
+  width: 3px;
+  background: #ffffff;
   box-shadow:
-    0 0 8px #fff4d5,
-    0 0 30px rgba(230, 180, 90, 0.8),
-    0 0 80px rgba(230, 180, 90, 0.45);
-
+    0 0 10px #38bdf8,
+    0 0 40px #818cf8,
+    0 0 90px rgba(56, 189, 248, 0.9);
   transform: translateX(-50%);
-
   opacity: 0;
-
+  z-index: 60;
+  pointer-events: none;
   transition:
-    opacity 0.5s ease,
-    box-shadow 0.5s ease;
+    opacity 0.5s ease 0.15s,
+    transform 0.65s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .resume-stage-opening .door-light {
   opacity: 1;
 }
 
-.resume-stage-revealed .door-light {
+.resume-stage-opened .door-light {
   opacity: 0;
+  transform: translateX(-50%) scaleX(3);
 }
-
-/* =========================================================
-   ACTUAL DOOR OPENING
-   ========================================================= */
-
-.resume-stage-revealed .resume-door-left {
-  transform: rotateY(-105deg);
-}
-
-.resume-stage-revealed .resume-door-right {
-  transform: rotateY(105deg);
-}
-
-/* =========================================================
-   CLOSING
-   ========================================================= */
-
-.resume-stage-closing .resume-door-left {
-  transform: rotateY(0deg);
-}
-
-.resume-stage-closing .resume-door-right {
-  transform: rotateY(0deg);
-}
-
-.resume-stage-closing .resume-document {
-  opacity: 0;
-  transform: scale(0.97);
-}
-
-/* =========================================================
-   SHRINK BACK INTO BUTTON
-   ========================================================= */
-
-.resume-stage-shrinking .resume-door-left {
-  left: var(--origin-left);
-  top: var(--origin-top);
-
-  width: calc(var(--origin-width) / 2);
-  height: var(--origin-height);
-}
-
-.resume-stage-shrinking .resume-door-right {
-  left: calc(var(--origin-left) + (var(--origin-width) / 2));
-
-  top: var(--origin-top);
-
-  width: calc(var(--origin-width) / 2);
-  height: var(--origin-height);
-}
-
-.resume-stage-shrinking .door-light {
-  opacity: 0;
-}
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 640px) {
-  .resume-close {
-    top: 14px;
-    right: 14px;
-
-    width: 42px;
-    height: 42px;
-
-    font-size: 24px;
-  }
-
-  .door-panel {
-    inset: 4%;
-  }
-
-  .door-inner-border {
-    inset: 8%;
-  }
-
-  .resume-door-left .door-handle {
-    right: 12px;
-  }
-
-  .resume-door-right .door-handle {
-    left: 12px;
-  }
-}
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .resume-door,
-  .resume-document,
+  .resume-document-wrapper,
   .resume-page-backdrop,
   .door-light {
     transition-duration: 0.01ms !important;

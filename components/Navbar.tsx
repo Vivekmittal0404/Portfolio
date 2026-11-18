@@ -15,10 +15,13 @@ export default function Navbar() {
         {/* Logo */}
         <a
           href="#"
-          className="text-xl font-bold text-white"
+          className="group flex items-center gap-1.5 text-xl font-bold tracking-tight text-white py-1"
           onClick={closeMenu}
         >
-          Vivek
+          <span className="navbar-logo-reflect font-black tracking-wide">
+            Vivek
+          </span>
+          <span className="h-1.5 w-1.5 rounded-full bg-blue-400 group-hover:scale-125 transition-transform duration-300 shadow-sm shadow-blue-400/80" />
         </a>
 
         {/* Desktop Navigation */}
@@ -49,6 +52,13 @@ export default function Navbar() {
             className="relative text-gray-300 transition-colors duration-300 hover:text-white after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-white after:transition-all after:duration-300 hover:after:w-full"
           >
             Journey
+          </a>
+
+          <a
+            href="#testimonials"
+            className="relative text-gray-300 transition-colors duration-300 hover:text-white after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-white after:transition-all after:duration-300 hover:after:w-full"
+          >
+            Testimonials
           </a>
 
           <a
@@ -121,6 +131,14 @@ export default function Navbar() {
               className="border-b border-white/5 py-4 text-gray-300 transition-colors duration-300 hover:text-white"
             >
               Journey
+            </a>
+
+            <a
+              href="#testimonials"
+              onClick={closeMenu}
+              className="border-b border-white/5 py-4 text-gray-300 transition-colors duration-300 hover:text-white"
+            >
+              Testimonials
             </a>
 
             <a

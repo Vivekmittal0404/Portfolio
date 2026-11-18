@@ -4,6 +4,7 @@ import About from "@/components/About";
 import Skills from "@/components/Skills";
 import Projects from "@/components/Projects";
 import Journey from "@/components/Journey";
+import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/contact";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -24,6 +25,9 @@ export default function Home() {
       </ScrollReveal>
       <ScrollReveal variant="card" duration={420}>
         <Journey />
+      </ScrollReveal>
+      <ScrollReveal variant="card" duration={420}>
+        <Testimonials />
       </ScrollReveal>
       <ScrollReveal variant="card" duration={420}>
         <Contact />

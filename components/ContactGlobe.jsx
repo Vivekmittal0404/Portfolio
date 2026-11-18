@@ -271,7 +271,7 @@ export default function ContactGlobe() {
       "
     >
       <Canvas
-        dpr={[1, 2]}
+        dpr={[1, 1.25]}
         camera={{
           position: [0, 0, 7],
           fov: 42,
@@ -279,6 +279,7 @@ export default function ContactGlobe() {
         gl={{
           antialias: true,
           alpha: true,
+          powerPreference: "high-performance",
         }}
       >
         <Scene />
@@ -286,9 +287,3 @@ export default function ContactGlobe() {
     </div>
   );
 }
-
-/* =========================================================
-   GLTF PRELOAD
-========================================================= */
-
-useGLTF.preload("/planet/scene.gltf");

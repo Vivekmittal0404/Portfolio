@@ -86,17 +86,26 @@ export async function getPublicProjects() {
 
   await connection();
   try {
-    await connectDatabase();
-    const isInitialized = await PortfolioSetting.exists({
-      key: "legacy-projects-v1",
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      const timer = setTimeout(() => reject(new Error("DB timeout")), 450);
+      if (typeof timer.unref === "function") timer.unref();
     });
-    if (!isInitialized) return initialProjects;
 
-    const projects = await Project.find({ featured: true })
-      .sort({ displayOrder: 1, createdAt: 1 })
-      .lean();
+    const dbPromise = (async () => {
+      await connectDatabase();
+      const isInitialized = await PortfolioSetting.exists({
+        key: "legacy-projects-v1",
+      });
+      if (!isInitialized) return initialProjects;
 
-    return projects.map(toPublicProject);
+      const projects = await Project.find({ featured: true })
+        .sort({ displayOrder: 1, createdAt: 1 })
+        .lean();
+
+      return projects.map(toPublicProject);
+    })();
+
+    return (await Promise.race([dbPromise, timeoutPromise])) as PortfolioProject[];
   } catch {
     return initialProjects;
   }
