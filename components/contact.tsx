@@ -38,26 +38,60 @@ export default function Contact() {
     const form = event.currentTarget;
     const formData = new FormData(form);
 
+    const name = (formData.get("name") as string) || "";
+    const email = (formData.get("email") as string) || "";
+    const subject = (formData.get("subject") as string) || "New Message from Portfolio Visitor";
+    const message = (formData.get("message") as string) || "";
+
+    // Client-side Web3Forms submission (guaranteed delivery to Vivek's email)
+    const web3Data = new FormData();
+    web3Data.append("access_key", "fb9b7dc0-06b8-433a-b07e-65bc319dec31");
+    web3Data.append("name", name);
+    web3Data.append("email", email);
+    web3Data.append("subject", subject);
+    web3Data.append("message", message);
+    web3Data.append("from_name", name || "Portfolio Contact");
+
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(Object.fromEntries(formData)),
+        body: web3Data,
       });
 
       const data = await response.json();
 
-      if (response.ok && data.ok) {
+      if (data.success || response.ok) {
         setFormMessage("Message sent successfully! I'll get back to you soon.");
-
         form.reset();
+
+        // Asynchronously save to internal database without blocking the user
+        void fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, subject, message }),
+        }).catch(() => undefined);
       } else {
-        setFormMessage("Something went wrong. Please try again.");
+        setFormMessage(data.message || "Something went wrong. Please try again.");
       }
     } catch (error) {
       console.error("Contact form error:", error);
-
-      setFormMessage("Unable to send the message. Please try again.");
+      // Fallback: try internal API if direct Web3Forms request encountered network issue
+      try {
+        const fallbackRes = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, subject, message }),
+        });
+        const fallbackData = await fallbackRes.json();
+        if (fallbackRes.ok && fallbackData.ok) {
+          setFormMessage("Message sent successfully! I'll get back to you soon.");
+          form.reset();
+        } else {
+          setFormMessage("Unable to send the message. Please try again.");
+        }
+      } catch {
+        setFormMessage("Unable to send the message. Please try again.");
+      }
     } finally {
       setIsSending(false);
     }

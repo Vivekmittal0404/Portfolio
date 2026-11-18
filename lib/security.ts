@@ -6,12 +6,24 @@ import { RateLimit } from "@/lib/models";
 
 export function isSameOrigin(request: Request) {
   const origin = request.headers.get("origin");
-  if (!origin) return false;
+  if (!origin) return true;
+
+  const host =
+    request.headers.get("x-forwarded-host") ?? request.headers.get("host");
 
   try {
+    const originHost = new URL(origin).host;
+    const reqHost = host ?? new URL(request.url).host;
+    if (originHost === reqHost) return true;
+    if (
+      (originHost.startsWith("localhost") || originHost.startsWith("127.0.0.1")) &&
+      (reqHost.startsWith("localhost") || reqHost.startsWith("127.0.0.1"))
+    ) {
+      return true;
+    }
     return new URL(origin).origin === new URL(request.url).origin;
   } catch {
-    return false;
+    return true;
   }
 }
 

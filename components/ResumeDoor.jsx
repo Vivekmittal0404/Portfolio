@@ -8,8 +8,10 @@ export default function ResumeDoor({ buttonRef }) {
   const [stage, setStage] = useState("closed");
   const [origin, setOrigin] = useState({ x: 0, y: 0, scaleX: 0.15, scaleY: 0.05 });
   const [resumeUrl, setResumeUrl] = useState("/resume.pdf?v=20261118");
+  const [pdfLoading, setPdfLoading] = useState(true);
   const openTimerRef = useRef(null);
   const closeTimerRef = useRef(null);
+  const canvasRef = useRef(null);
 
   const calculateOrigin = useCallback(() => {
     if (buttonRef?.current && typeof window !== "undefined") {
@@ -27,6 +29,74 @@ export default function ResumeDoor({ buttonRef }) {
     }
     return { x: 0, y: 0, scaleX: 0.15, scaleY: 0.05 };
   }, [buttonRef]);
+
+  // Pre-render PDF on mobile canvas directly without the browser "Open PDF" prompt
+  useEffect(() => {
+    if (stage === "closed") return;
+
+    let isMounted = true;
+    setPdfLoading(true);
+
+    const renderPdfOnMobile = async () => {
+      try {
+        if (!window.pdfjsLib) {
+          const script = document.createElement("script");
+          script.src =
+            "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+          script.async = true;
+          await new Promise((resolve, reject) => {
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+          });
+        }
+
+        if (!window.pdfjsLib || !isMounted) return;
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+        const loadingTask = window.pdfjsLib.getDocument("/resume.pdf?v=20261118");
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+
+        if (!isMounted || !canvasRef.current) return;
+
+        const canvas = canvasRef.current;
+        const context = canvas.getContext("2d");
+        const unscaledViewport = page.getViewport({ scale: 1 });
+
+        const containerWidth =
+          canvas.parentElement?.clientWidth || window.innerWidth || 360;
+        const dpr = Math.min(window.devicePixelRatio || 2, 2.5);
+        const scale = ((containerWidth - 16) / unscaledViewport.width) * dpr;
+        const viewport = page.getViewport({ scale: Math.max(1.8, scale) });
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        canvas.style.width = "100%";
+        canvas.style.height = "auto";
+
+        const renderContext = {
+          canvasContext: context,
+          viewport: viewport,
+        };
+
+        await page.render(renderContext).promise;
+        if (isMounted) {
+          setPdfLoading(false);
+        }
+      } catch (err) {
+        console.warn("Mobile PDF canvas render notice:", err);
+        if (isMounted) setPdfLoading(false);
+      }
+    };
+
+    renderPdfOnMobile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [stage]);
 
   const openResume = useCallback(() => {
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
@@ -201,7 +271,29 @@ export default function ResumeDoor({ buttonRef }) {
 
               {/* PDF Container */}
               <div className="resume-document">
-                <iframe src={resumeUrl} title="Vivek Mittal Resume" />
+                {/* Desktop view: native interactive PDF iframe */}
+                <div className="hidden md:block w-full h-full">
+                  <iframe src={resumeUrl} title="Vivek Mittal Resume" className="w-full h-full border-none" />
+                </div>
+
+                {/* Mobile view: direct Canvas rendering via Mozilla PDF.js */}
+                {/* Eliminates the Android/iOS "Open PDF" prompt and displays the resume directly */}
+                <div className="block md:hidden w-full h-full overflow-y-auto overflow-x-hidden p-2 sm:p-3 bg-[#0d1117]">
+                  {pdfLoading && (
+                    <div className="flex flex-col items-center justify-center py-20 text-gray-400 gap-3">
+                      <div className="h-8 w-8 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+                      <span className="text-xs font-medium text-gray-300">
+                        Opening Resume...
+                      </span>
+                    </div>
+                  )}
+                  <canvas
+                    ref={canvasRef}
+                    className={`w-full h-auto rounded-lg shadow-xl mx-auto block transition-opacity duration-300 ${
+                      pdfLoading ? "opacity-0" : "opacity-100"
+                    }`}
+                  />
+                </div>
               </div>
             </div>
 

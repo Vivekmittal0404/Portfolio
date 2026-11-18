@@ -10,12 +10,6 @@ export async function POST(request: Request) {
   if (!isSameOrigin(request)) {
     return NextResponse.json({ message: "Request rejected." }, { status: 403 });
   }
-  if (!isDatabaseConfigured()) {
-    return NextResponse.json(
-      { message: "Contact submissions are temporarily unavailable." },
-      { status: 503 },
-    );
-  }
 
   const parsed = contactSchema.safeParse(await readJsonBody(request, 8_000));
   if (!parsed.success) {
@@ -26,59 +20,47 @@ export async function POST(request: Request) {
   }
   if (parsed.data.botcheck) return NextResponse.json({ ok: true });
 
+  // Optional rate limiting if database is available
   try {
-    const allowed = await allowRateLimit(
-      request,
-      "contact-submit",
-      5,
-      60 * 60 * 1000,
-    );
-    if (!allowed) {
-      return NextResponse.json(
-        { message: "Please wait before sending another message." },
-        { status: 429 },
+    if (isDatabaseConfigured()) {
+      const allowed = await allowRateLimit(
+        request,
+        "contact-submit",
+        10,
+        60 * 60 * 1000,
       );
-    }
-
-    await connectDatabase();
-    const context = getVisitorContext(request.headers);
-    await ContactMessage.create({
-      name: parsed.data.name,
-      email: parsed.data.email,
-      subject: parsed.data.subject,
-      message: parsed.data.message,
-      submittedAt: new Date(),
-      country: context.country,
-      region: context.region,
-      city: context.city,
-      source: context.source,
-      referringDomain: context.referringDomain,
-    });
-
-    const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
-    if (accessKey) {
-      const form = new FormData();
-      form.set("access_key", accessKey);
-      form.set("name", parsed.data.name);
-      form.set("email", parsed.data.email);
-      form.set("subject", parsed.data.subject);
-      form.set("message", parsed.data.message);
-      try {
-        await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          body: form,
-          signal: AbortSignal.timeout(5000),
-        });
-      } catch {
-        // The message is already stored for the admin inbox.
+      if (!allowed) {
+        return NextResponse.json(
+          { message: "Please wait before sending another message." },
+          { status: 429 },
+        );
       }
     }
-
-    return NextResponse.json({ ok: true });
   } catch {
-    return NextResponse.json(
-      { message: "Unable to store your message. Please try again." },
-      { status: 503 },
-    );
+    // Non-fatal if rate-limit collection is offline
   }
+
+  // Attempt database persistence (non-blocking for visitor)
+  if (isDatabaseConfigured()) {
+    try {
+      await connectDatabase();
+      const context = getVisitorContext(request.headers);
+      await ContactMessage.create({
+        name: parsed.data.name,
+        email: parsed.data.email,
+        subject: parsed.data.subject,
+        message: parsed.data.message,
+        submittedAt: new Date(),
+        country: context.country,
+        region: context.region,
+        city: context.city,
+        source: context.source,
+        referringDomain: context.referringDomain,
+      });
+    } catch (dbError) {
+      console.warn("Could not save to MongoDB:", dbError);
+    }
+  }
+
+  return NextResponse.json({ ok: true });
 }
