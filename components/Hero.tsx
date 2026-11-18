@@ -9,7 +9,7 @@ export default function Hero() {
   const rafId = useRef<number | null>(null);
 
   useEffect(() => {
-    // Subtle mouse parallax for the ambient light orbs without React re-renders
+    // Ultra-lightweight mouse parallax without layout thrashing
     const handleMouseMove = (e: MouseEvent) => {
       if (!heroRef.current) return;
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -17,11 +17,10 @@ export default function Hero() {
 
       rafId.current = requestAnimationFrame(() => {
         if (heroRef.current) {
-          const rect = heroRef.current.getBoundingClientRect();
-          const x = ((e.clientX - rect.left) / rect.width - 0.5) * 35;
-          const y = ((e.clientY - rect.top) / rect.height - 0.5) * 35;
-          heroRef.current.style.setProperty("--aurora-x", `${x}px`);
-          heroRef.current.style.setProperty("--aurora-y", `${y}px`);
+          const x = (e.clientX / window.innerWidth - 0.5) * 30;
+          const y = (e.clientY / window.innerHeight - 0.5) * 30;
+          heroRef.current.style.setProperty("--aurora-x", `${x.toFixed(1)}px`);
+          heroRef.current.style.setProperty("--aurora-y", `${y.toFixed(1)}px`);
         }
         rafId.current = null;
       });
@@ -53,18 +52,20 @@ export default function Hero() {
           }}
         />
 
-        {/* Ambient Aurora 1 (Deep Blue / Sky Blue) */}
+        {/* Ambient Aurora 1 (Deep Blue / Sky Blue) - Hardware Radial Gradient */}
         <div
-          className="animate-aurora-1 will-change-transform absolute top-[15%] left-[25%] h-[380px] w-[500px] rounded-full bg-blue-600/25 blur-[64px] transition-transform duration-500 ease-out"
+          className="absolute top-[10%] left-[20%] h-[460px] w-[560px] rounded-full transition-transform duration-700 ease-out pointer-events-none"
           style={{
+            background: "radial-gradient(circle, rgba(37, 99, 235, 0.28) 0%, rgba(37, 99, 235, 0.1) 45%, transparent 70%)",
             transform: `translate3d(calc(var(--aurora-x, 0px) * 0.7), calc(var(--aurora-y, 0px) * 0.7), 0)`,
           }}
         />
 
-        {/* Ambient Aurora 2 (Electric Violet / Purple) */}
+        {/* Ambient Aurora 2 (Electric Violet / Purple) - Hardware Radial Gradient */}
         <div
-          className="animate-aurora-2 will-change-transform absolute top-[28%] right-[20%] h-[340px] w-[460px] rounded-full bg-purple-600/20 blur-[64px] transition-transform duration-700 ease-out"
+          className="absolute top-[22%] right-[16%] h-[420px] w-[500px] rounded-full transition-transform duration-700 ease-out pointer-events-none"
           style={{
+            background: "radial-gradient(circle, rgba(147, 51, 234, 0.22) 0%, rgba(147, 51, 234, 0.07) 45%, transparent 70%)",
             transform: `translate3d(calc(var(--aurora-x, 0px) * -0.5), calc(var(--aurora-y, 0px) * -0.5), 0)`,
           }}
         />

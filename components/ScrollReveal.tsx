@@ -37,13 +37,20 @@ export default function ScrollReveal({
         hasRevealedRef.current = true;
         observer.unobserve(element);
 
-        // A subtle fade/slide/scale avoids expensive clip-path wipes and feels responsive.
+        // If already visible on initial mount or refresh, show directly without jarring layout flash
+        if (entry.boundingClientRect.top < window.innerHeight * 0.7) {
+          element.style.opacity = "1";
+          element.style.transform = "none";
+          return;
+        }
+
+        // A subtle fade/slide avoids expensive reflows
         const xOffset =
-          variant === "card" ? 0 : direction === "left" ? -10 : 10;
-        const yOffset = variant === "card" ? 14 : 8;
+          variant === "card" ? 0 : direction === "left" ? -8 : 8;
+        const yOffset = variant === "card" ? 10 : 6;
         const startTransform =
           variant === "card"
-            ? `translate3d(0, ${yOffset}px, 0) scale(0.985)`
+            ? `translate3d(0, ${yOffset}px, 0)`
             : `translate3d(${xOffset}px, ${yOffset}px, 0)`;
 
         element.style.willChange = "opacity, transform";

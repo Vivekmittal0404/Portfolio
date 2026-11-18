@@ -16,19 +16,18 @@ html::-webkit-scrollbar {
 @keyframes hero-fade-scale {
   0% {
     opacity: 0;
-    transform: translateY(28px) scale(0.96);
-    filter: blur(8px);
+    transform: translateY(20px) scale(0.97);
   }
 
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
-    filter: blur(0px);
   }
 }
 
 .hero-entrance > * {
-  animation: hero-fade-scale 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: hero-fade-scale 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
 }
 
 .hero-entrance > :nth-child(1) {
@@ -104,53 +103,24 @@ html::-webkit-scrollbar {
   background: linear-gradient(
     115deg,
     #ffffff 0%,
-    #cbd5e1 32%,
-    #ffffff 44%,
-    #60a5fa 50%,
-    #ffffff 56%,
-    #cbd5e1 68%,
+    #cbd5e1 35%,
+    #93c5fd 48%,
+    #60a5fa 52%,
+    #ffffff 65%,
+    #cbd5e1 80%,
     #ffffff 100%
   );
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: logo-reflect-sweep 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  filter: drop-shadow(0 0 12px rgba(96, 165, 250, 0.25));
-  /* High-end inverted glass mirror reflection underneath */
-  -webkit-box-reflect: below -7px linear-gradient(
-    transparent 50%,
-    rgba(255, 255, 255, 0.22) 100%
-  );
-  transition: filter 0.3s ease;
+  animation: logo-reflect-sweep 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  text-shadow: 0 0 20px rgba(96, 165, 250, 0.35);
 }
 
 .group:hover .navbar-logo-reflect {
-  animation: logo-reflect-sweep 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  filter: drop-shadow(0 0 18px rgba(96, 165, 250, 0.6));
-}
-
-@keyframes hero-aurora-drift {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.45;
-  }
-  33% {
-    transform: translate(35px, -25px) scale(1.1);
-    opacity: 0.65;
-  }
-  66% {
-    transform: translate(-30px, 20px) scale(0.92);
-    opacity: 0.5;
-  }
-}
-
-.animate-aurora-1 {
-  animation: hero-aurora-drift 14s ease-in-out infinite alternate;
-}
-
-.animate-aurora-2 {
-  animation: hero-aurora-drift 18s ease-in-out infinite alternate-reverse;
+  animation: logo-reflect-sweep 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  text-shadow: 0 0 25px rgba(96, 165, 250, 0.6);
 }
 
 /* Button light sweep reflection */

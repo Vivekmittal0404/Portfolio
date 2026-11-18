@@ -1,10 +1,5 @@
 "use client";
-import dynamic from "next/dynamic";
 import { useState, useEffect, useRef } from "react";
-
-// Lazy-load heavy 3D WebGL canvases only when user reaches Contact section
-const ContactGlobe = dynamic(() => import("./ContactGlobe"), { ssr: false });
-const ContactStars = dynamic(() => import("./ContactStars"), { ssr: false });
 
 /* =========================================================
    CONTACT
@@ -14,6 +9,8 @@ export default function Contact() {
   const [isSending, setIsSending] = useState(false);
   const [formMessage, setFormMessage] = useState("");
   const [isInView, setIsInView] = useState(false);
+  const [GlobeComponent, setGlobeComponent] = useState<React.ComponentType | null>(null);
+  const [StarsComponent, setStarsComponent] = useState<React.ComponentType | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -21,7 +18,12 @@ export default function Contact() {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsInView(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          // Load heavy Three.js only when the user scrolls near the contact section
+          import("./ContactGlobe").then((m) => setGlobeComponent(() => m.default));
+          import("./ContactStars").then((m) => setStarsComponent(() => m.default));
+        }
       },
       { rootMargin: "300px 0px" }
     );
@@ -108,7 +110,7 @@ export default function Contact() {
         text-white
       "
     >
-      {isInView && <ContactStars />}
+      {isInView && StarsComponent && <StarsComponent />}
 
       {/* =====================================
     CONTENT
@@ -403,7 +405,7 @@ export default function Contact() {
     ================================= */}
 
           <div className="pointer-events-none relative h-72 w-full sm:h-96 lg:h-[620px]">
-            {isInView && <ContactGlobe />}
+            {isInView && GlobeComponent && <GlobeComponent />}
           </div>
         </div>
       </div>

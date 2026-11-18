@@ -84,8 +84,6 @@ const testimonialsData: Testimonial[] = [
 
 export default function Testimonials() {
   const [activeCategory, setActiveCategory] = useState<TestimonialCategory>("all");
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoplayPaused, setIsAutoplayPaused] = useState(false);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const filteredTestimonials =
@@ -93,18 +91,9 @@ export default function Testimonials() {
       ? testimonialsData
       : testimonialsData.filter((t) => t.category === activeCategory);
 
-  const nextSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % filteredTestimonials.length);
-  }, [filteredTestimonials.length]);
-
-  const prevSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + filteredTestimonials.length) % filteredTestimonials.length);
-  }, [filteredTestimonials.length]);
-
   // Handle category change
   const handleCategoryChange = (category: TestimonialCategory) => {
     setActiveCategory(category);
-    setCurrentIndex(0);
   };
 
   // Subtle 3D card tilt and spotlight mouse tracking
@@ -112,24 +101,21 @@ export default function Testimonials() {
     const card = cardRefs.current[index];
     if (!card) return;
 
-    // Check for reduced motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Set cursor spotlight variables
     card.style.setProperty("--mouse-x", `${x}px`);
     card.style.setProperty("--mouse-y", `${y}px`);
 
-    // Calculate perspective tilt (-5 deg to +5 deg)
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    const rotateX = ((y - centerY) / centerY) * -5;
-    const rotateY = ((x - centerX) / centerX) * 5;
+    const rotateX = ((y - centerY) / centerY) * -4;
+    const rotateY = ((x - centerX) / centerX) * 4;
 
-    card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px)`;
+    card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
   };
 
   const handleMouseLeave = (index: number) => {
@@ -140,16 +126,6 @@ export default function Testimonials() {
     card.style.setProperty("--mouse-x", "-1000px");
     card.style.setProperty("--mouse-y", "-1000px");
   };
-
-  // Autoplay timer
-  useEffect(() => {
-    if (isAutoplayPaused || filteredTestimonials.length <= 1) return;
-    const timer = setInterval(() => {
-      nextSlide();
-    }, 6000);
-
-    return () => clearInterval(timer);
-  }, [isAutoplayPaused, nextSlide, filteredTestimonials.length]);
 
   return (
     <section id="testimonials" className="relative px-6 py-16 md:py-28 overflow-hidden">
@@ -208,11 +184,7 @@ export default function Testimonials() {
         </div>
 
         {/* Testimonials Grid / Cards */}
-        <div
-          className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          onMouseEnter={() => setIsAutoplayPaused(true)}
-          onMouseLeave={() => setIsAutoplayPaused(false)}
-        >
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredTestimonials.map((testimonial, idx) => (
             <div key={testimonial.id} className="card-tilt-container flex">
               <div
@@ -295,49 +267,6 @@ export default function Testimonials() {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Carousel Bottom Controls & Collaboration Banner */}
-        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/10 pt-6">
-          <div className="flex items-center gap-3 text-xs text-gray-400">
-            <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
-            <span>Open for new projects and engineering collaborations.</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={prevSlide}
-              aria-label="Previous testimonial"
-              className="rounded-full border border-white/10 bg-white/[0.03] p-2.5 text-gray-300 transition-all duration-300 hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-white active:scale-95"
-            >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-
-            <div className="flex items-center gap-1.5">
-              {filteredTestimonials.map((_, i) => (
-                <span
-                  key={i}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    i === currentIndex ? "w-5 bg-blue-400" : "w-2 bg-white/20"
-                  }`}
-                />
-              ))}
-            </div>
-
-            <button
-              type="button"
-              onClick={nextSlide}
-              aria-label="Next testimonial"
-              className="rounded-full border border-white/10 bg-white/[0.03] p-2.5 text-gray-300 transition-all duration-300 hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-white active:scale-95"
-            >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
         </div>
       </div>
     </section>
