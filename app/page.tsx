@@ -9,6 +9,8 @@ import Contact from "@/components/contact";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   return (
     <main className="bg-black text-white">

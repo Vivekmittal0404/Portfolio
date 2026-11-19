@@ -3,28 +3,77 @@
 import { createPortal } from "react-dom";
 import { useEffect, useState, useCallback, useRef } from "react";
 
+function isMobileOrNoPdfSupport() {
+  if (typeof window === "undefined") return false;
+
+  // 1. Android Chrome, Samsung Internet, and mobile browsers explicitly report pdfViewerEnabled === false
+  if (typeof navigator !== "undefined" && navigator.pdfViewerEnabled === false) {
+    return true;
+  }
+
+  // 2. Comprehensive Mobile / Tablet / Phone User Agent test
+  const ua = (typeof navigator !== "undefined" && navigator.userAgent) || "";
+  if (
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(
+      ua
+    )
+  ) {
+    return true;
+  }
+
+  // 3. Modern Chromium Client Hints (Android even if "Desktop site" is requested)
+  const uaData =
+    typeof navigator !== "undefined" ? navigator.userAgentData : undefined;
+  if (uaData?.mobile || /Android/i.test(uaData?.platform || "")) {
+    return true;
+  }
+
+  // 4. Touchscreen detection (all physical mobile devices have touch)
+  const isTouch =
+    (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0) ||
+    "ontouchstart" in window ||
+    (typeof window.matchMedia === "function" &&
+      window.matchMedia("(pointer: coarse)").matches);
+
+  // 5. If it's a touch device AND screen width <= 1024px (covers all phones, foldables, tablets in portrait & landscape)
+  if (isTouch && window.innerWidth <= 1024) {
+    return true;
+  }
+
+  // 6. Direct viewport width check for DevTools or narrow windows
+  if (window.innerWidth < 800) {
+    return true;
+  }
+
+  // 7. Pure touch devices without mouse hover capability
+  if (
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(hover: none)").matches
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 export default function ResumeDoor({ buttonRef }) {
   // stages: "closed" -> "expanding" -> "expanded" -> "opened" -> "closing" -> "shrinking" -> "closed"
   const [stage, setStage] = useState("closed");
   const [origin, setOrigin] = useState({ x: 0, y: 0, scaleX: 0.15, scaleY: 0.05 });
-  const [resumeUrl, setResumeUrl] = useState("/resume.pdf?v=20261118");
+  const [resumeUrl, setResumeUrl] = useState("/resume.pdf?v=20261119");
   const [isMobile, setIsMobile] = useState(false);
   const openTimerRef = useRef(null);
   const closeTimerRef = useRef(null);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(
-        typeof window !== "undefined" &&
-          (window.innerWidth < 768 ||
-            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-              navigator.userAgent
-            ))
-      );
+    const update = () => setIsMobile(isMobileOrNoPdfSupport());
+    update();
+    window.addEventListener("resize", update);
+    window.addEventListener("orientationchange", update);
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener("orientationchange", update);
     };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const calculateOrigin = useCallback(() => {
@@ -48,19 +97,22 @@ export default function ResumeDoor({ buttonRef }) {
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
     if (openTimerRef.current) clearTimeout(openTimerRef.current);
 
+    // Re-evaluate device/browser support freshly at the exact moment of click
+    setIsMobile(isMobileOrNoPdfSupport());
+
     const anonymousId =
       typeof window !== "undefined"
         ? sessionStorage.getItem("portfolio_anonymous_visitor")
         : null;
     
-    // Asynchronously record download/view metric without delaying iframe render
+    // Asynchronously record download/view metric without delaying render
     if (typeof window !== "undefined") {
       const trackUrl = anonymousId
         ? `/api/resume/download?visitor=${encodeURIComponent(anonymousId)}`
         : "/api/resume/download";
       void fetch(trackUrl, { method: "GET", keepalive: true }).catch(() => undefined);
     }
-    setResumeUrl(`/resume.pdf?v=20261118`);
+    setResumeUrl(`/resume.pdf?v=20261119`);
 
     // Calculate exact button position to emerge from
     const coords = calculateOrigin();
@@ -222,7 +274,7 @@ export default function ResumeDoor({ buttonRef }) {
                   /* Completely avoids mounting any <iframe> in DOM, permanently eliminating Android Chrome's "Open PDF" prompt */
                   <div className="w-full h-full overflow-y-auto overflow-x-hidden p-2 sm:p-4 bg-[#0d1117] flex flex-col items-center touch-pan-y">
                     <img
-                      src="/resume-preview.png?v=20261118"
+                      src="/resume-preview.png?v=20261119"
                       alt="Vivek Mittal - Full Stack Developer Resume"
                       className="w-full h-auto max-w-[850px] rounded-lg shadow-2xl object-contain select-none mx-auto block"
                       loading="eager"
