@@ -62,6 +62,10 @@ export default function ResumeDoor({ buttonRef }) {
   const [origin, setOrigin] = useState({ x: 0, y: 0, scaleX: 0.15, scaleY: 0.05 });
   const [resumeUrl, setResumeUrl] = useState("/resume.pdf?v=20261119");
   const [isMobile, setIsMobile] = useState(false);
+  const [zoomScale, setZoomScale] = useState(1);
+  const touchStartDistRef = useRef(0);
+  const initialZoomRef = useRef(1);
+  const lastTapRef = useRef(0);
   const openTimerRef = useRef(null);
   const closeTimerRef = useRef(null);
 
@@ -75,6 +79,52 @@ export default function ResumeDoor({ buttonRef }) {
       window.removeEventListener("orientationchange", update);
     };
   }, []);
+
+  const handleZoomIn = () => {
+    setZoomScale((prev) => Math.min(2.5, Math.round((prev + 0.25) * 100) / 100));
+  };
+
+  const handleZoomOut = () => {
+    setZoomScale((prev) => Math.max(1.0, Math.round((prev - 0.25) * 100) / 100));
+  };
+
+  const handleZoomReset = () => {
+    setZoomScale(1.0);
+  };
+
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      touchStartDistRef.current = dist;
+      initialZoomRef.current = zoomScale;
+    } else if (e.touches.length === 1) {
+      const now = Date.now();
+      if (now - lastTapRef.current < 300) {
+        // Double tap toggles between 1.0x and 1.5x
+        setZoomScale((prev) => (prev > 1.1 ? 1.0 : 1.5));
+      }
+      lastTapRef.current = now;
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (e.touches.length === 2 && touchStartDistRef.current > 0) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const ratio = dist / touchStartDistRef.current;
+      const newScale = Math.min(2.5, Math.max(1.0, initialZoomRef.current * ratio));
+      setZoomScale(Math.round(newScale * 100) / 100);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    touchStartDistRef.current = 0;
+  };
 
   const calculateOrigin = useCallback(() => {
     if (buttonRef?.current && typeof window !== "undefined") {
@@ -99,6 +149,7 @@ export default function ResumeDoor({ buttonRef }) {
 
     // Re-evaluate device/browser support freshly at the exact moment of click
     setIsMobile(isMobileOrNoPdfSupport());
+    setZoomScale(1.0);
 
     const anonymousId =
       typeof window !== "undefined"
@@ -125,7 +176,7 @@ export default function ResumeDoor({ buttonRef }) {
     // Stage 2: Expand smoothly from button to full screen
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        setStage("expanded");
+        setStage((prev) => (prev === "expanding" ? "expanded" : prev));
       });
     });
 
@@ -138,6 +189,7 @@ export default function ResumeDoor({ buttonRef }) {
   const closeResume = useCallback(() => {
     if (openTimerRef.current) clearTimeout(openTimerRef.current);
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    setZoomScale(1.0);
 
     // Refresh button coordinates in case of any viewport adjustments
     const coords = calculateOrigin();
@@ -222,47 +274,80 @@ export default function ResumeDoor({ buttonRef }) {
             <div className="resume-document-wrapper">
               {/* Floating Top Control Bar */}
               <div className="resume-toolbar">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-2 w-2 rounded-full bg-blue-400 animate-pulse" />
-                  <span className="text-xs md:text-sm font-medium text-gray-200">
-                    Vivek Mittal &bull; Full Stack Developer Resume
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="h-2 w-2 rounded-full bg-blue-400 animate-pulse shrink-0" />
+                  <span className="text-xs md:text-sm font-medium text-gray-200 truncate">
+                    <span className="hidden sm:inline">Vivek Mittal &bull; Full Stack Developer Resume</span>
+                    <span className="inline sm:hidden">Resume</span>
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 md:gap-3">
+                <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+                  {/* Zoom Controls (+ / - / Reset) */}
+                  <div className="flex items-center rounded-full border border-white/10 bg-white/5 p-0.5 text-xs text-gray-300">
+                    <button
+                      type="button"
+                      onClick={handleZoomOut}
+                      disabled={zoomScale <= 1.0}
+                      className="h-6 w-6 flex items-center justify-center rounded-full text-sm font-bold hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:hover:bg-transparent"
+                      title="Zoom Out"
+                      aria-label="Zoom Out"
+                    >
+                      −
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleZoomReset}
+                      className="px-1.5 font-mono text-[11px] font-semibold hover:text-blue-400 transition-colors"
+                      title="Reset Zoom to 100%"
+                    >
+                      {Math.round(zoomScale * 100)}%
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleZoomIn}
+                      disabled={zoomScale >= 2.5}
+                      className="h-6 w-6 flex items-center justify-center rounded-full text-sm font-bold hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:hover:bg-transparent"
+                      title="Zoom In"
+                      aria-label="Zoom In"
+                    >
+                      +
+                    </button>
+                  </div>
+
                   <a
-                    href="/resume.pdf?v=20261118"
+                    href="/resume.pdf?v=20261119"
                     download="Vivek_Mittal_Resume.pdf"
-                    className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs text-gray-300 transition-all hover:border-blue-400/50 hover:bg-blue-500/15 hover:text-white"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1.5 text-xs text-gray-300 transition-all hover:border-blue-400/50 hover:bg-blue-500/15 hover:text-white"
                     title="Download PDF"
                   >
                     <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    <span className="hidden sm:inline">Download</span>
+                    <span className="hidden md:inline">Download</span>
                   </a>
 
                   <a
-                    href="/resume.pdf?v=20261118"
+                    href="/resume.pdf?v=20261119"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs text-gray-300 transition-all hover:border-blue-400/50 hover:bg-blue-500/15 hover:text-white"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1.5 text-xs text-gray-300 transition-all hover:border-blue-400/50 hover:bg-blue-500/15 hover:text-white"
                     title="Open in new tab"
                   >
                     <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
-                    <span className="hidden sm:inline">New Tab</span>
+                    <span className="hidden md:inline">New Tab</span>
                   </a>
 
                   <button
                     type="button"
                     onClick={closeResume}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-medium text-white transition-all hover:bg-red-500/20 hover:border-red-400/50 active:scale-95"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 sm:px-3 py-1.5 text-xs font-medium text-white transition-all hover:bg-red-500/20 hover:border-red-400/50 active:scale-95"
                     aria-label="Close resume"
                   >
                     <span>Close</span>
-                    <span className="text-gray-400 text-[10px] hidden sm:inline">[ESC]</span>
+                    <span className="text-gray-400 text-[10px] hidden md:inline">[ESC]</span>
                   </button>
                 </div>
               </div>
@@ -270,16 +355,35 @@ export default function ResumeDoor({ buttonRef }) {
               {/* PDF Container */}
               <div className="resume-document">
                 {isMobile ? (
-                  /* Mobile view: Direct crisp retina preview image */
-                  /* Completely avoids mounting any <iframe> in DOM, permanently eliminating Android Chrome's "Open PDF" prompt */
-                  <div className="w-full h-full overflow-y-auto overflow-x-hidden p-2 sm:p-4 bg-[#0d1117] flex flex-col items-center touch-pan-y">
-                    <img
-                      src="/resume-preview.png?v=20261119"
-                      alt="Vivek Mittal - Full Stack Developer Resume"
-                      className="w-full h-auto max-w-[850px] rounded-lg shadow-2xl object-contain select-none mx-auto block"
-                      loading="eager"
-                      decoding="async"
-                    />
+                  /* Mobile view: Direct crisp retina preview with pinch-to-zoom, momentum scrolling & zero waste scrollbars */
+                  <div
+                    className={`w-full h-full p-2 sm:p-4 bg-[#0d1117] flex flex-col items-center select-none overscroll-contain ${
+                      zoomScale > 1 ? "overflow-auto" : "overflow-y-auto overflow-x-hidden"
+                    }`}
+                    style={{
+                      WebkitOverflowScrolling: "touch",
+                      touchAction: zoomScale > 1 ? "pan-x pan-y pinch-zoom" : "pan-y pinch-zoom",
+                    }}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                  >
+                    <div
+                      className="transition-transform duration-100 ease-out flex justify-center w-full"
+                      style={{
+                        transform: zoomScale > 1 ? `scale(${zoomScale})` : "none",
+                        transformOrigin: "top center",
+                        margin: zoomScale > 1 ? `${(zoomScale - 1) * 30}% 0` : "0",
+                      }}
+                    >
+                      <img
+                        src="/resume-preview.png?v=20261119c"
+                        alt="Vivek Mittal - Full Stack Developer Resume"
+                        className="w-full h-auto max-w-[850px] rounded-lg shadow-2xl object-contain block mx-auto pointer-events-auto"
+                        loading="eager"
+                        decoding="async"
+                      />
+                    </div>
                   </div>
                 ) : (
                   /* Desktop view: Native interactive PDF iframe */

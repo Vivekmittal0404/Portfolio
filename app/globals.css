@@ -465,6 +465,7 @@ body {
 
 .resume-document {
   flex: 1;
+  min-height: 0;
   width: 100%;
   height: 100%;
   background: #11141d;
@@ -472,6 +473,26 @@ body {
   z-index: 110;
   pointer-events: auto;
   overflow: hidden;
+}
+
+.resume-document *::-webkit-scrollbar:horizontal {
+  display: none !important;
+  height: 0px !important;
+  width: 0px !important;
+}
+
+.resume-document *::-webkit-scrollbar {
+  width: 5px;
+  height: 0px;
+}
+
+.resume-document *::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+}
+
+.resume-document *::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .resume-document iframe {
